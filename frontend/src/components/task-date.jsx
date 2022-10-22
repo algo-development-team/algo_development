@@ -38,9 +38,6 @@ export const TaskDate = ({ date }) => {
     if (isYesterday) {
       return 'Yesterday'
     }
-    // if (isWeekend) {
-    //   return moment(date, moment.defaultFormat).format("dddd");
-    // }
     return moment(date, moment.defaultFormat).format('MMM DD')
     // return moment(date, moment.defaultFormat).format('dddd')
   }
