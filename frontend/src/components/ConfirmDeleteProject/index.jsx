@@ -44,7 +44,7 @@ export const ConfrimDeleteProject = ({ projectId, closeOverlay }) => {
     } catch (error) {
       console.log(error)
     }
-    navigate('/app/Today')
+    navigate('/app/Checklist')
 
     closeOverlay()
   }

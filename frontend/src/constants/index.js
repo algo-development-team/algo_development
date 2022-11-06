@@ -1,8 +1,6 @@
 export const collatedTasks = [
-    { key: 'Inbox', name: 'Inbox' },
-    { key: 'Today', name: 'Today' },
-    { key: 'Scheduled', name: 'Scheduled' },
-    { key: 'Important', name: 'Important' },
-  ];
-
-  
+  { key: 'Checklist', name: 'Checklist' },
+  { key: 'Inbox', name: 'Inbox' },
+  { key: 'Scheduled', name: 'Scheduled' },
+  { key: 'Important', name: 'Important' },
+]

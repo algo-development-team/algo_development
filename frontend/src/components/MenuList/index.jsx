@@ -61,7 +61,7 @@ export const MenuList = ({
       docs.forEach(async (taskDoc) => {
         await deleteDoc(taskDoc.ref)
       })
-      targetIsProject && navigate('/app/Today')
+      targetIsProject && navigate('/app/Checklist')
     } catch (error) {
       console.log(error)
     }

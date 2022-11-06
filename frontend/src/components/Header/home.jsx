@@ -10,11 +10,11 @@ export const HomeButton = () => {
   )
   return (
     <Link
-      to='/app/Today'
+      to='/app/Checklist'
       className='home_button header-clickable'
       onClick={() =>
         setSelectedProject({
-          selectedProjectName: 'Inbox',
+          selectedProjectName: 'Checklist',
           defaultProject: true,
         })
       }
