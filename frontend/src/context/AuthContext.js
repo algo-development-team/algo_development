@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password).then((cred) => {
       setCurrentUser(cred.user)
       localStorage.setItem('userAuth', JSON.stringify(cred.user))
-      navigate('/app/Inbox')
+      navigate('/app/Today')
     })
   }
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
         setDisplayName(name)
         setCurrentUser({ ...cred.user, displayName: name })
         localStorage.setItem('userAuth', JSON.stringify(cred.user))
-        navigate('/app/Inbox')
+        navigate('/app/Today')
       },
     )
   }
@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
         }
         setCurrentUser(userData)
         localStorage.setItem('userAuth', JSON.stringify(userData))
-        navigate('/app/Inbox')
+        navigate('/app/Today')
       })
       .catch((error) => {
         const errorCode = error.code
