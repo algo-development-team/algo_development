@@ -18,6 +18,7 @@ import { db } from '_firebase'
 import { SetNewTaskProject } from './set-new-task-project'
 import { SetNewTaskSchedule } from './set-new-task-schedule'
 import { SetNewTaskPriority } from './set-new-task-priority'
+import { SetNewTaskTimeLength } from './set-new-task-time-length'
 import './styles/main.scss'
 import './styles/light.scss'
 
@@ -258,10 +259,10 @@ export const TaskEditor = ({
                   taskPriority={taskPriority}
                   setTaskPriority={setTaskPriority}
                 />
-                <SetNewTaskSchedule
+                <SetNewTaskTimeLength
                   isQuickAdd={isQuickAdd}
-                  schedule={schedule}
-                  setSchedule={setSchedule}
+                  taskTimeLength={taskTimeLength}
+                  setTaskTimeLength={setTaskTimeLength}
                 />
               </div>
               <div className='add-task__attributes--right'></div>

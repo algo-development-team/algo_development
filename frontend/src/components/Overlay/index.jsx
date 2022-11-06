@@ -2,6 +2,7 @@ import { ConfrimDeleteProject } from 'components/ConfirmDeleteProject'
 import { SetNewTaskProjectPopper } from 'components/dropdowns/set-new-task-project-popper'
 import { SetNewTaskSchedulePopper } from 'components/dropdowns/set-new-task-schedule-popper'
 import { SetNewTaskPriorityPopper } from 'components/dropdowns/set-new-task-priority-popper'
+import { SetNewTaskTimeLengthPopper } from 'components/dropdowns/set-new-task-time-length-popper'
 import { MenuList } from 'components/MenuList'
 import { UserOptions } from 'components/UserOption'
 import { ViewOptions } from 'components/ViewOptions'
@@ -81,6 +82,17 @@ export const Overlay = () => {
           <SetNewTaskPriorityPopper
             closeOverlay={closeOverlay}
             setTaskPriority={dialogProps.setTaskPriority}
+            projectId={dialogProps.projectId}
+            xPosition={dialogProps.elementPosition.x}
+            yPosition={dialogProps.elementPosition.y}
+            setPopupSelectedProject={dialogProps.setPopupSelectedProject}
+          />
+        )
+      case 'SET_TASK_TIME_LENGTH':
+        return (
+          <SetNewTaskTimeLengthPopper
+            closeOverlay={closeOverlay}
+            setTaskTimeLength={dialogProps.setTaskTimeLength}
             projectId={dialogProps.projectId}
             xPosition={dialogProps.elementPosition.x}
             yPosition={dialogProps.elementPosition.y}
