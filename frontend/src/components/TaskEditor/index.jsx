@@ -99,12 +99,12 @@ export const TaskEditor = ({
   const resetForm = (event) => {
     event?.preventDefault()
     setProject({ ...selectedProject })
-    // setSchedule({ day: '', date: '' })
     isQuickAdd && closeOverlay()
     setTaskName('')
     setTaskDescription('')
     setTaskPriority(1)
     setTaskTimeLength(15)
+    setSchedule({ day: '', date: '' })
     setTaskEditorToShow('')
   }
 

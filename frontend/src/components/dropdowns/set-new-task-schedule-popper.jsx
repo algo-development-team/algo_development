@@ -21,14 +21,14 @@ export const SetNewTaskSchedulePopper = ({
 
   const setNext7days = () => {
     setSchedule({
-      day: 'Next week',
+      day: 'NW',
       date: moment().add(7, 'days').format('DD-MM-YYYY'),
     })
     isQuickAdd ? setShowPopup(false) : closeOverlay()
   }
   const setTomorrow = () => {
     setSchedule({
-      day: 'Tomorrow',
+      day: 'TMR',
       date: moment().add(1, 'day').format('DD-MM-YYYY'),
     })
     isQuickAdd ? setShowPopup(false) : closeOverlay()
@@ -39,7 +39,7 @@ export const SetNewTaskSchedulePopper = ({
   }
   const setWeekend = () => {
     setSchedule({
-      day: 'Weekend',
+      day: 'WE',
       date: moment().day('Saturday').format('DD-MM-YYYY'),
     })
     isQuickAdd ? setShowPopup(false) : closeOverlay()
@@ -49,7 +49,7 @@ export const SetNewTaskSchedulePopper = ({
     const today = moment().startOf('day')
     const daysDiff = customDateFormatted.diff(today, 'days')
     setSchedule({
-      day: moment().add(daysDiff, 'day').format('DD MMM'),
+      day: moment().add(daysDiff, 'day').format('MMM DD'),
       date: moment().add(daysDiff, 'day').format('DD-MM-YYYY'),
     })
     isQuickAdd ? setShowPopup(false) : closeOverlay()

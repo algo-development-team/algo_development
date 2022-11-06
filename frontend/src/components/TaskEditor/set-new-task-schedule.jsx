@@ -16,15 +16,15 @@ export const SetNewTaskSchedule = ({ isQuickAdd, setSchedule, schedule }) => {
       let day = 'date__today'
       return day
     }
-    if (schedule?.day === 'Tomorrow') {
+    if (schedule?.day === 'TMR') {
       let day = 'date__tomorrow'
       return day
     }
-    if (schedule?.day === 'Weekend') {
+    if (schedule?.day === 'WE') {
       let day = 'date__weekend'
       return day
     }
-    if (schedule?.day === 'Next week') {
+    if (schedule?.day === 'NW') {
       let day = 'date__next-week'
       return day
     }
@@ -48,7 +48,7 @@ export const SetNewTaskSchedule = ({ isQuickAdd, setSchedule, schedule }) => {
       >
         <ScheduleIcon width={'18px'} height={'18px'} />
 
-        {schedule?.day === '' ? 'Due date' : schedule?.day}
+        {schedule?.day === '' ? 'Due Date' : schedule?.day}
       </div>
       {showPopup && (
         <SetNewTaskSchedulePopper

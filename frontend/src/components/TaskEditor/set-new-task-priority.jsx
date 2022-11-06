@@ -60,7 +60,7 @@ export const SetNewTaskPriority = ({
       >
         <ScheduleIcon width={'18px'} height={'18px'} />
 
-        {getPriorityText(taskPriority)}
+        {taskPriority ? getPriorityText(taskPriority) : 'Low'}
       </div>
       {showPopup && (
         <SetNewTaskPriorityPopper

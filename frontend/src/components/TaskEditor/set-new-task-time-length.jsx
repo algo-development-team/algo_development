@@ -48,7 +48,7 @@ export const SetNewTaskTimeLength = ({
       >
         <ScheduleIcon width={'18px'} height={'18px'} />
 
-        {getTimeLengthText(taskTimeLength)}
+        {taskTimeLength ? getTimeLengthText(taskTimeLength) : '15min'}
       </div>
       {showPopup && (
         <SetNewTaskTimeLengthPopper
