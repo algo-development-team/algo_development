@@ -80,7 +80,6 @@ export const SetNewTaskSchedulePopper = ({
         }}
       >
         <ul>
-          {/* // todo: change this class name to "scheduler-suggestions-item" */}
           <li
             className='set-schedule__popper--option'
             onClick={() => setToday()}
@@ -157,7 +156,7 @@ export const SetNewTaskSchedulePopper = ({
             onClick={() => setNoDate()}
           >
             <div className=''>
-              <NoDateIcon color={'grey'} />
+              <NoDateIcon fill={'grey'} />
             </div>
 
             <p className='set-new-task__schedule--name'>No Date</p>

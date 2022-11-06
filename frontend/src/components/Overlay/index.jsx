@@ -1,33 +1,39 @@
-import { ConfrimDeleteProject } from "components/ConfirmDeleteProject";
-import { SetNewTaskProjectPopper } from "components/dropdowns/set-new-task-project-popper";
-import { SetNewTaskSchedulePopper } from "components/dropdowns/set-new-task-schedule-popper";
-import { MenuList } from "components/MenuList";
-import { UserOptions } from "components/UserOption";
-import { ViewOptions } from "components/ViewOptions";
-import { useOverlayContextValue } from "context/overlay-context";
-import { useEffect } from "react";
-import "./main.scss";
-import { ProjectEditor } from "./ProjectEditor";
-import { QuickAddTaskDialog } from "./quick-add-task-dialog";
+import { ConfrimDeleteProject } from 'components/ConfirmDeleteProject'
+import { SetNewTaskProjectPopper } from 'components/dropdowns/set-new-task-project-popper'
+import { SetNewTaskSchedulePopper } from 'components/dropdowns/set-new-task-schedule-popper'
+import { SetNewTaskPriorityPopper } from 'components/dropdowns/set-new-task-priority-popper'
+import { MenuList } from 'components/MenuList'
+import { UserOptions } from 'components/UserOption'
+import { ViewOptions } from 'components/ViewOptions'
+import { useOverlayContextValue } from 'context/overlay-context'
+import { useEffect } from 'react'
+import './main.scss'
+import { ProjectEditor } from './ProjectEditor'
+import { QuickAddTaskDialog } from './quick-add-task-dialog'
 export const Overlay = () => {
-  const { showDialog, setShowDialog, dialogProps, setDialogProps } = useOverlayContextValue();
+  const { showDialog, setShowDialog, dialogProps, setDialogProps } =
+    useOverlayContextValue()
   const closeOverlay = () => {
-    setShowDialog("");
-  };
+    setShowDialog('')
+  }
   useEffect(() => {
-    setShowDialog(false);
-  }, []);
+    setShowDialog(false)
+  }, [])
   const renderSwitch = (params) => {
     switch (showDialog) {
-      case "ADD_PROJECT":
-        return <ProjectEditor closeOverlay={closeOverlay} />;
-      case "QUICK_ADD_TASK":
-        return <QuickAddTaskDialog closeOverlay={closeOverlay} />;
-      case "USER_OPTIONS":
+      case 'ADD_PROJECT':
+        return <ProjectEditor closeOverlay={closeOverlay} />
+      case 'QUICK_ADD_TASK':
+        return <QuickAddTaskDialog closeOverlay={closeOverlay} />
+      case 'USER_OPTIONS':
         return (
-          <UserOptions closeOverlay={closeOverlay} xPosition={dialogProps.elementPosition.x} yPosition={dialogProps.elementPosition.y} />
-        );
-      case "VIEW_OPTIONS":
+          <UserOptions
+            closeOverlay={closeOverlay}
+            xPosition={dialogProps.elementPosition.x}
+            yPosition={dialogProps.elementPosition.y}
+          />
+        )
+      case 'VIEW_OPTIONS':
         return (
           <ViewOptions
             closeOverlay={closeOverlay}
@@ -35,8 +41,8 @@ export const Overlay = () => {
             yPosition={dialogProps.elementPosition.y}
             projectId={dialogProps.projectId}
           />
-        );
-      case "MENU_LIST":
+        )
+      case 'MENU_LIST':
         return (
           <MenuList
             closeOverlay={closeOverlay}
@@ -48,8 +54,8 @@ export const Overlay = () => {
             targetIsTask={dialogProps.targetIsTask}
             taskIsImportant={dialogProps.taskIsImportant}
           />
-        );
-      case "SET_SCHEDULE":
+        )
+      case 'SET_SCHEDULE':
         return (
           <SetNewTaskSchedulePopper
             closeOverlay={closeOverlay}
@@ -58,8 +64,8 @@ export const Overlay = () => {
             xPosition={dialogProps.elementPosition.x}
             yPosition={dialogProps.elementPosition.y}
           />
-        );
-      case "SET_PROJECT":
+        )
+      case 'SET_PROJECT':
         return (
           <SetNewTaskProjectPopper
             closeOverlay={closeOverlay}
@@ -69,13 +75,35 @@ export const Overlay = () => {
             yPosition={dialogProps.elementPosition.y}
             setPopupSelectedProject={dialogProps.setPopupSelectedProject}
           />
-        );
-      case "EDIT_PROJECT":
-        return <ProjectEditor isEdit projectToEdit={dialogProps.project} closeOverlay={closeOverlay} />;
+        )
+      case 'SET_TASK_PRIORITY':
+        return (
+          <SetNewTaskPriorityPopper
+            closeOverlay={closeOverlay}
+            setTaskPriority={dialogProps.setTaskPriority}
+            projectId={dialogProps.projectId}
+            xPosition={dialogProps.elementPosition.x}
+            yPosition={dialogProps.elementPosition.y}
+            setPopupSelectedProject={dialogProps.setPopupSelectedProject}
+          />
+        )
+      case 'EDIT_PROJECT':
+        return (
+          <ProjectEditor
+            isEdit
+            projectToEdit={dialogProps.project}
+            closeOverlay={closeOverlay}
+          />
+        )
 
-      case "CONFIRM_DELETE":
-        return <ConfrimDeleteProject closeOverlay={closeOverlay} projectId={dialogProps.projectId} />;
+      case 'CONFIRM_DELETE':
+        return (
+          <ConfrimDeleteProject
+            closeOverlay={closeOverlay}
+            projectId={dialogProps.projectId}
+          />
+        )
     }
-  };
-  return <>{renderSwitch(showDialog)}</>;
-};
+  }
+  return <>{renderSwitch(showDialog)}</>
+}

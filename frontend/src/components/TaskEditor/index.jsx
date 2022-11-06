@@ -17,6 +17,7 @@ import { generatePushId } from 'utils'
 import { db } from '_firebase'
 import { SetNewTaskProject } from './set-new-task-project'
 import { SetNewTaskSchedule } from './set-new-task-schedule'
+import { SetNewTaskPriority } from './set-new-task-priority'
 import './styles/main.scss'
 import './styles/light.scss'
 
@@ -231,6 +232,20 @@ export const TaskEditor = ({
               placeholder='Some description...'
             />
 
+            <div
+              className='add-task__attributes'
+              style={{ marginBottom: '10px' }}
+            >
+              <div className='add-task__attributes--left'>
+                <SetNewTaskProject
+                  isQuickAdd={isQuickAdd}
+                  project={project}
+                  projects={projects}
+                  setProject={setProject}
+                />
+              </div>
+              <div className='add-task__attributes--right'></div>
+            </div>
             <div className='add-task__attributes'>
               <div className='add-task__attributes--left'>
                 <SetNewTaskSchedule
@@ -238,11 +253,15 @@ export const TaskEditor = ({
                   schedule={schedule}
                   setSchedule={setSchedule}
                 />
-                <SetNewTaskProject
+                <SetNewTaskPriority
                   isQuickAdd={isQuickAdd}
-                  project={project}
-                  projects={projects}
-                  setProject={setProject}
+                  taskPriority={taskPriority}
+                  setTaskPriority={setTaskPriority}
+                />
+                <SetNewTaskSchedule
+                  isQuickAdd={isQuickAdd}
+                  schedule={schedule}
+                  setSchedule={setSchedule}
                 />
               </div>
               <div className='add-task__attributes--right'></div>
