@@ -16,15 +16,15 @@ export const SetNewTaskSchedule = ({ isQuickAdd, setSchedule, schedule }) => {
       let day = 'date__today'
       return day
     }
-    if (schedule?.day === 'TMR') {
+    if (schedule?.day === 'Tomorrow') {
       let day = 'date__tomorrow'
       return day
     }
-    if (schedule?.day === 'WE') {
+    if (schedule?.day === 'Weekend') {
       let day = 'date__weekend'
       return day
     }
-    if (schedule?.day === 'NW') {
+    if (schedule?.day === 'Next Week') {
       let day = 'date__next-week'
       return day
     }
