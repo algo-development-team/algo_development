@@ -157,11 +157,13 @@ export const TaskEditor = ({
       setSchedule({
         day:
           task.date.length > 1
-            ? moment(task.date, moment.defaultFormat).format('DD MMM  ')
+            ? moment(task.date, moment.defaultFormat).format('MMM DD ')
             : task.date,
         date: task.date,
       })
     }
+    if (!taskPriority) setTaskPriority(1)
+    if (!taskTimeLength) setTaskTimeLength(15)
   }, [defaultGroup])
 
   useEffect(() => {
