@@ -49,7 +49,7 @@ export const SetNewTaskSchedulePopper = ({
     const today = moment().startOf('day')
     const daysDiff = customDateFormatted.diff(today, 'days')
     setSchedule({
-      day: moment().add(daysDiff, 'day').format('MMM DD'),
+      day: moment().add(daysDiff, 'day').format('M DD'),
       date: moment().add(daysDiff, 'day').format('DD-MM-YYYY'),
     })
     isQuickAdd ? setShowPopup(false) : closeOverlay()

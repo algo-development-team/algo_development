@@ -157,7 +157,7 @@ export const TaskEditor = ({
       setSchedule({
         day:
           task.date.length > 1
-            ? moment(task.date, moment.defaultFormat).format('MMM DD ')
+            ? moment(task.date, moment.defaultFormat).format('M DD')
             : task.date,
         date: task.date,
       })
