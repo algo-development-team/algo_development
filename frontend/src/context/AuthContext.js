@@ -19,6 +19,7 @@ import {
 import { getAuth, updateProfile } from 'firebase/auth'
 import { db } from '_firebase'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { gapi } from 'gapi-script'
 
 export const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
@@ -26,6 +27,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
   let navigate = useNavigate()
   const authUser = getAuth()
+
+  useEffect(() => {
+    gapi.load('client:auth2', () => {
+      gapi.auth2.init({
+        clientId: process.env.REACT_APP_CLIENT_ID,
+        scope: 'openid email profile https://www.googleapis.com/auth/calendar',
+      })
+    })
+  }, [])
 
   const setDisplayName = (name) => {
     updateProfile(authUser.currentUser, {
@@ -35,6 +45,11 @@ export const AuthProvider = ({ children }) => {
       // ...
     })
   }
+
+  const handleGapiAuthInstance = () => {
+    gapi.auth2.getAuthInstance().disconnect()
+  }
+
   const signinWithEmail = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password).then((cred) => {
       setCurrentUser(cred.user)
@@ -44,7 +59,6 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signupWithEmail = async ({ email, password, name }) => {
-    //Todo: reutrn the function below and perform routing in signup component
     return createUserWithEmailAndPassword(auth, email, password).then(
       (cred) => {
         setDisplayName(name)
@@ -79,6 +93,7 @@ export const AuthProvider = ({ children }) => {
   const signout = () => {
     const userAuth = getAuth()
 
+    gapi.auth2.getAuthInstance().disconnect()
     signOut(userAuth)
       .then(() => {
         setCurrentUser(null)
