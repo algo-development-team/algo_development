@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     e.preventDefault()
     signInWithPopup(auth, provider)
       .then((result) => {
-        const user = result.user // user contains the refresh token
+        const user = result.user
         const userData = {
           displayName: user.displayName,
           email: user.email,
@@ -88,10 +88,9 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const getDefaultUserInfo = (refreshToken) => {
+    const getDefaultUserInfo = () => {
       const defaultRankings = new Array(24).fill(50)
       const defaultUserInfo = {
-        refreshToken: refreshToken,
         workTimeRange: '9:00-17:00',
         sleepTimeRange: '23:00-07:00',
         workDays: [false, true, true, true, true, true, false],
@@ -131,21 +130,13 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    const populateUserInfo = async (userId, refreshToken) => {
-      const defaultUserInfo = getDefaultUserInfo(refreshToken)
+    const populateUserInfo = async (userId) => {
+      const defaultUserInfo = getDefaultUserInfo()
       try {
         await addDoc(
           collection(db, 'user', `${userId}/userInfo`),
           defaultUserInfo,
         )
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    const updateRefreshToken = async (refreshToken, userInfoDoc) => {
-      try {
-        await updateDoc(userInfoDoc.ref, { refreshToken: refreshToken })
       } catch (error) {
         console.log(error)
       }
@@ -160,18 +151,8 @@ export const AuthProvider = ({ children }) => {
           const snapshotData = snapshot.data()
           const userInfo = await getUserInfo(snapshot.id)
           if (userInfo.empty === true && userInfo.failed === false) {
-            await populateUserInfo(snapshot.id, userAuth.refreshToken)
-          } else if (userInfo.empty === false && userInfo.failed === false) {
-            if (
-              userInfo.userInfoDoc.data().refreshToken !== userAuth.refreshToken
-            ) {
-              console.log('refresh token changed')
-              await updateRefreshToken(
-                userAuth.refreshToken,
-                userInfo.userInfoDoc,
-              )
-            }
-          } else {
+            await populateUserInfo(snapshot.id)
+          } else if (userInfo.failed === true) {
             console.log('error getting user info')
             alert('Please refresh the page')
           }
