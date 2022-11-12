@@ -8,19 +8,19 @@ export const GoogleCalendarAuth = ({ closeOverlay }) => {
 
     console.log('code:', code) // DEBUG
 
-    // OLD CODE FOR SENDING TOKEN TO THE BACKEND
-
-    // axios
-    //   .put(`${process.env.REACT_APP_SERVER_URL}/api/auth/create-tokens`, {
-    //     code,
-    //   })
-    //   .then((response) => {
-    //     console.log(response.data)
-    //     setSignedIn(true)
-    //   })
-    //   .catch((error) => {
-    //     console.log(error.message)
-    //   })
+    axios
+      .patch(
+        `${process.env.REACT_APP_SERVER_URL}/api/google-calendar/handle-token`,
+        {
+          code,
+        },
+      )
+      .then((response) => {
+        console.log(response.data)
+      })
+      .catch((error) => {
+        console.log(error.message)
+      })
   }
 
   const responseError = (error) => {
