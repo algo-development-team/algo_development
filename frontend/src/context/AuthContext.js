@@ -91,6 +91,7 @@ export const AuthProvider = ({ children }) => {
     const getDefaultUserInfo = () => {
       const defaultRankings = new Array(24).fill(50)
       const defaultUserInfo = {
+        refreshToken: null,
         workTimeRange: '9:00-17:00',
         sleepTimeRange: '23:00-07:00',
         workDays: [false, true, true, true, true, true, false],

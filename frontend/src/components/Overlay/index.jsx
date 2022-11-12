@@ -11,6 +11,7 @@ import { useEffect } from 'react'
 import './main.scss'
 import { ProjectEditor } from './ProjectEditor'
 import { QuickAddTaskDialog } from './quick-add-task-dialog'
+import { GoogleCalendarAuth } from './google-calendar-auth'
 export const Overlay = () => {
   const { showDialog, setShowDialog, dialogProps, setDialogProps } =
     useOverlayContextValue()
@@ -26,6 +27,8 @@ export const Overlay = () => {
         return <ProjectEditor closeOverlay={closeOverlay} />
       case 'QUICK_ADD_TASK':
         return <QuickAddTaskDialog closeOverlay={closeOverlay} />
+      case 'GOOGLE_CALENDAR_AUTH':
+        return <GoogleCalendarAuth closeOverlay={closeOverlay} />
       case 'USER_OPTIONS':
         return (
           <UserOptions
