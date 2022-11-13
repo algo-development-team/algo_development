@@ -2,6 +2,8 @@ import { useOverlayContextValue } from 'context'
 import { checkSignInStatus } from 'gapiHandlers'
 import { scheduleToday } from 'scheduler/schedule'
 import { useAuth } from 'hooks'
+import { fetchEvents } from 'googleCalendar'
+import moment from 'moment'
 
 export const AddChecklist = () => {
   const { setShowDialog } = useOverlayContextValue()

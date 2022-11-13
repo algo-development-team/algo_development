@@ -1,12 +1,22 @@
+/***
+ * Wrapper functions for gapi handler functions
+ * Handles input and output
+ * ***/
+
 import { getCalendarEvents, insertCalenderEvent } from 'gapiHandlers'
 
-export const fetchEvents = async (calendarId = 'primary', maxResults = 10) => {
+export const fetchEvents = async (timeMin, timeMax, calendarId = 'primary') => {
+  // timeMin and timeMax are in ISO Date String format
+  // timeMin and timeMax should already be formatted
+  // use the following code for formatting: (automatically handles timezone as well, so no need to worry about that)
+  // const timeMin = moment('2022-11-13T00:00:00').toISOString()
+  // const timeMax = moment('2022-11-14T00:00:00').toISOString()
   const fetchOption = {
     calendarId: calendarId,
-    timeMin: new Date().toISOString(),
+    timeMin: timeMin,
+    timeMax: timeMax,
     showDeleted: false,
     singleEvents: true,
-    maxResults: maxResults,
     orderBy: 'startTime',
   }
   const events = await getCalendarEvents(fetchOption)

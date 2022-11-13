@@ -7,4 +7,4 @@
 
 > GitHub CI/CD Deployment
 
-- Need to set-up in the future
+- Already set-up in root directory (algo_development), need to test

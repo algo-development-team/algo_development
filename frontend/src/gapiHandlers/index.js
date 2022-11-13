@@ -39,7 +39,11 @@ export const initClient = (callback) => {
 }
 
 export const disconnectClient = () => {
-  gapi.auth2.getAuthInstance().disconnect()
+  try {
+    gapi.auth2.getAuthInstance().disconnect()
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 // 0: not loaded
@@ -58,13 +62,65 @@ export const checkSignInStatus = async () => {
 }
 
 export const getCalendarEvents = async (fetchOption) => {
-  const events = await gapi.client.calendar.events.list(fetchOption)
-  return events.result.items
+  try {
+    const events = await gapi.client.calendar.events.list(fetchOption)
+    return events.result.items
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const insertCalenderEvent = async (insertOption) => {
-  const event = await gapi.client.calendar.events.insert(insertOption)
-  return event.result
+  try {
+    const event = await gapi.client.calendar.events.insert(insertOption)
+    return event.result
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const fetchAllCalendarIds = () => {
+  try {
+    let calendarIds = []
+    gapi.client.load('calendar', 'v3', () => {
+      const request = gapi.client.calendar.calendarList.list({})
+      request.execute(function (resp) {
+        if (!resp.error) {
+          var calendarIds = []
+          for (var i = 0; i < resp.items.length; i++) {
+            calendarIds.push(resp.items[i].id)
+          }
+        } else {
+          throw new Error(resp.error)
+        }
+      })
+    })
+    return calendarIds
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const insertCalendar = (summary) => {
+  let result = null
+  gapi.client.load('calendar', 'v3', () => {
+    result = gapi.client.calendar.calendars
+      .insert({
+        resource: {
+          summary: summary,
+        },
+      })
+      .then(
+        function (response) {
+          // Handle the results here (response.result has the parsed body).
+          console.log('Response', response)
+        },
+        function (err) {
+          console.error('Execute error', err)
+        },
+      )
+  })
+  return result
 }
 
 /*** 
