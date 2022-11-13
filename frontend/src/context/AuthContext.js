@@ -1,30 +1,21 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect } from 'react'
 import { auth, createUserProfileDocument, provider } from '_firebase'
 import {
   signInWithPopup,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  signInWithRedirect,
 } from 'firebase/auth'
-import {
-  onSnapshot,
-  getDocs,
-  addDoc,
-  updateDoc,
-  collection,
-  query,
-  where,
-} from 'firebase/firestore'
+import { onSnapshot } from 'firebase/firestore'
 import { getAuth, updateProfile } from 'firebase/auth'
-import { db } from '_firebase'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { disconnectClient, initClient } from 'gapiHandlers'
 import {
-  disconnectClient,
-  initClient,
-  signInToGoogle,
-  signOutFromGoogle,
-} from 'gapiHandlers'
+  getUserInfo,
+  getDefaultUserInfo,
+  initializeUserInfo,
+  updateUserInfo,
+} from 'handleUserInfo'
 
 export const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
@@ -116,60 +107,6 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const getDefaultUserInfo = () => {
-      const defaultRankings = new Array(24).fill(50)
-      const defaultUserInfo = {
-        workTimeRange: '9:00-17:00',
-        sleepTimeRange: '23:00-07:00',
-        workDays: [false, true, true, true, true, true, false],
-        isSetup: false,
-        calendarId: null,
-        checklist: [],
-        urgentRankingsWw: defaultRankings,
-        deepRankingsWw: defaultRankings,
-        shallowRankingsWw: defaultRankings,
-        urgentRankingsPw: defaultRankings,
-        deepRankingsPw: defaultRankings,
-        shallowRankingsPw: defaultRankings,
-        urgentRankingsPnw: defaultRankings,
-        deepRankingsPnw: defaultRankings,
-        shallowRankingsPnw: defaultRankings,
-      }
-      return defaultUserInfo
-    }
-
-    const getUserInfo = async (userId) => {
-      try {
-        const userInfoQuery = await query(
-          collection(db, 'user', `${userId}/userInfo`),
-        )
-        const userInfoDocs = await getDocs(userInfoQuery)
-        const userInfoDocList = []
-        userInfoDocs.forEach((userInfoDoc) => {
-          userInfoDocList.push(userInfoDoc)
-        })
-        if (userInfoDocs.empty === true) {
-          return { empty: true, userInfoDoc: null, failed: false }
-        }
-        return { empty: false, userInfoDoc: userInfoDocList[0], failed: false }
-      } catch (error) {
-        console.log(error)
-        return { empty: true, userInfoDoc: null, failed: true }
-      }
-    }
-
-    const populateUserInfo = async (userId) => {
-      const defaultUserInfo = getDefaultUserInfo()
-      try {
-        await addDoc(
-          collection(db, 'user', `${userId}/userInfo`),
-          defaultUserInfo,
-        )
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
     const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
       setLoading(false)
       if (userAuth) {
@@ -178,7 +115,8 @@ export const AuthProvider = ({ children }) => {
           const snapshotData = snapshot.data()
           const userInfo = await getUserInfo(snapshot.id)
           if (userInfo.empty === true && userInfo.failed === false) {
-            await populateUserInfo(snapshot.id)
+            const defaultUserInfo = getDefaultUserInfo()
+            await initializeUserInfo(snapshot.id, defaultUserInfo)
           } else if (userInfo.failed === true) {
             console.log('error getting user info')
             alert('Please refresh the page')
