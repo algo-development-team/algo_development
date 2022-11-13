@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "todoist-8cd61"
-  }
+    "default": "algo-364007",
+    "deploy": "algo-364007"
+  },
+  "targets": {},
+  "etags": {}
 }
