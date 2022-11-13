@@ -4,23 +4,23 @@ import axios from 'axios'
 export const GoogleCalendarAuth = ({ closeOverlay }) => {
   const responseGoogle = (response) => {
     console.log(response)
-    const { code } = response
+    // const { code } = response
 
-    console.log('code:', code) // DEBUG
+    // console.log('code:', code) // DEBUG
 
-    axios
-      .patch(
-        `${process.env.REACT_APP_SERVER_URL}/api/google-calendar/handle-token`,
-        {
-          code,
-        },
-      )
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        console.log(error.message)
-      })
+    // axios
+    //   .patch(
+    //     `${process.env.REACT_APP_SERVER_URL}/api/google-calendar/handle-token`,
+    //     {
+    //       code,
+    //     },
+    //   )
+    //   .then((response) => {
+    //     console.log(response.data)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error.message)
+    //   })
   }
 
   const responseError = (error) => {

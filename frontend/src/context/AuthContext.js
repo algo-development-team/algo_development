@@ -19,7 +19,12 @@ import {
 import { getAuth, updateProfile } from 'firebase/auth'
 import { db } from '_firebase'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { gapi } from 'gapi-script'
+import {
+  disconnectClient,
+  initClient,
+  signInToGoogle,
+  signOutFromGoogle,
+} from 'gapiHandlers'
 
 export const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
@@ -28,12 +33,22 @@ export const AuthProvider = ({ children }) => {
   let navigate = useNavigate()
   const authUser = getAuth()
 
+  // useEffect(() => {
+  //   gapi.load('client:auth2', () => {
+  //     gapi.auth2.init({
+  //       clientId: process.env.REACT_APP_CLIENT_ID,
+  //       scope: 'openid email profile https://www.googleapis.com/auth/calendar',
+  //     })
+  //   })
+  // }, [])
+
   useEffect(() => {
-    gapi.load('client:auth2', () => {
-      gapi.auth2.init({
-        clientId: process.env.REACT_APP_CLIENT_ID,
-        scope: 'openid email profile https://www.googleapis.com/auth/calendar',
-      })
+    initClient((result) => {
+      if (result) {
+        console.log('Client initialized')
+      } else {
+        console.log('Client not initialized')
+      }
     })
   }, [])
 
@@ -44,10 +59,6 @@ export const AuthProvider = ({ children }) => {
       // An error occurred
       // ...
     })
-  }
-
-  const handleGapiAuthInstance = () => {
-    gapi.auth2.getAuthInstance().disconnect()
   }
 
   const signinWithEmail = (email, password) => {
@@ -93,7 +104,7 @@ export const AuthProvider = ({ children }) => {
   const signout = () => {
     const userAuth = getAuth()
 
-    gapi.auth2.getAuthInstance().disconnect()
+    disconnectClient()
     signOut(userAuth)
       .then(() => {
         setCurrentUser(null)

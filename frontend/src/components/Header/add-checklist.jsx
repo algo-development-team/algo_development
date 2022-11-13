@@ -1,29 +1,23 @@
-import { useEffect, useState } from 'react'
-import { gapi } from 'gapi-script'
 import { useOverlayContextValue } from 'context'
-import { useAuth } from 'hooks'
+import { checkSignInStatus } from 'gapiHandlers'
 
 export const AddChecklist = () => {
   const { setShowDialog } = useOverlayContextValue()
-  const { currentUser } = useAuth()
 
   return (
     <div>
       <button
-        onClick={() => {
-          if (gapi.auth2?.getAuthInstance()?.isSignedIn?.get()) {
-            console.log(
-              'Signed In (Google OAuth2 - Google Calendar API Access)',
-            )
-            console.log(
-              'auth2?.getAuthInstance():',
-              gapi.auth2?.getAuthInstance(),
-            ) // DEBUG
-          } else if (!gapi.auth2) {
+        onClick={async () => {
+          const signInStatus = await checkSignInStatus()
+          if (signInStatus === 0) {
             console.log(
               'Not Loaded (Google OAuth2 - Google Calendar API Access)',
             )
-          } else {
+          } else if (signInStatus === 1) {
+            console.log(
+              'Signed In (Google OAuth2 - Google Calendar API Access)',
+            )
+          } else if (signInStatus === 2) {
             console.log(
               'Not Signed In (Google OAuth2 - Google Calendar API Access)',
             )
