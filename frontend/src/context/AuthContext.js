@@ -14,7 +14,6 @@ import {
   getUserInfo,
   getDefaultUserInfo,
   initializeUserInfo,
-  updateUserInfo,
 } from 'handleUserInfo'
 
 export const AuthContext = createContext()

@@ -21,7 +21,6 @@ export const AddChecklist = () => {
               'Signed In (Google OAuth2 - Google Calendar API Access)',
             )
             // Calling Scheduler Algorithm
-            console.log('currentUser.id:', currentUser.id) // DEBUG
             scheduleToday(currentUser.id)
           } else if (signInStatus === 2) {
             console.log(
