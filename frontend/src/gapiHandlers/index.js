@@ -92,11 +92,24 @@ export const getUserTimeZone = async () => {
 
 export const fetchAllCalendars = async () => {
   try {
-    const calendars = await gapi.client.calendar.calendarList.list({
+    const allCalendars = []
+    let calendars = null
+    calendars = await gapi.client.calendar.calendarList.list({
+      maxResults: 250,
       showDeleted: false,
       showHidden: false,
     })
-    return calendars.result.items
+    allCalendars.push(...calendars.result.items)
+    while (calendars.result.nextPageToken) {
+      calendars = await gapi.client.calendar.calendarList.list({
+        maxResults: 250,
+        showDeleted: false,
+        showHidden: false,
+        syncToken: calendars.result.nextPageToken,
+      })
+      allCalendars.push(...calendars.result.items)
+    }
+    return allCalendars
   } catch (error) {
     console.log(error)
   }
