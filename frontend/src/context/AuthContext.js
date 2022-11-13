@@ -171,7 +171,6 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
       setLoading(false)
       if (userAuth) {
-        // userAuth contains the refresh token
         const userRef = await createUserProfileDocument(userAuth)
         onSnapshot(userRef, async (snapshot) => {
           const snapshotData = snapshot.data()
