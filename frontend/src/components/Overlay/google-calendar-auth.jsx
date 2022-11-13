@@ -4,13 +4,12 @@ import axios from 'axios'
 export const GoogleCalendarAuth = ({ closeOverlay }) => {
   const responseGoogle = (response) => {
     console.log(response)
-    // const { code } = response
 
-    // console.log('code:', code) // DEBUG
-
+    // Request to Server-side
+    // Not used in current implementation
     // axios
     //   .patch(
-    //     `${process.env.REACT_APP_SERVER_URL}/api/google-calendar/handle-token`,
+    //     `${process.env.REACT_APP_SERVER_URL}/some-endpoint`,
     //     {
     //       code,
     //     },

@@ -1,5 +1,6 @@
 import { useOverlayContextValue } from 'context'
 import { checkSignInStatus } from 'gapiHandlers'
+import { fetchEvents } from 'googleCalendar'
 
 export const AddChecklist = () => {
   const { setShowDialog } = useOverlayContextValue()
@@ -17,6 +18,7 @@ export const AddChecklist = () => {
             console.log(
               'Signed In (Google OAuth2 - Google Calendar API Access)',
             )
+            // Call Scheduler Algorithm here
           } else if (signInStatus === 2) {
             console.log(
               'Not Signed In (Google OAuth2 - Google Calendar API Access)',
