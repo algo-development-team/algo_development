@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { gapi } from 'gapi-script'
 import featherIcon from 'assets/svg/feather-sprite.svg'
 import { useThemeContextValue } from 'context'
 import { useAuth } from 'hooks'
@@ -11,15 +10,6 @@ export const UserOptions = ({ closeOverlay, xPosition, yPosition }) => {
   const { displayName, email } = currentUser || {}
   const formatedDisplayName = displayName?.replace(' ', '+') || null
   const { isLight, setIsLight } = useThemeContextValue()
-
-  useEffect(() => {
-    gapi.load('client:auth2', () => {
-      gapi.auth2.init({
-        clientId: process.env.REACT_APP_CLIENT_ID,
-        scope: 'openid email profile https://www.googleapis.com/auth/calendar',
-      })
-    })
-  }, [])
 
   const themeToggleHandler = (event) => {
     setIsLight(!isLight)

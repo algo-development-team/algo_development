@@ -33,6 +33,8 @@ export const AuthProvider = ({ children }) => {
   let navigate = useNavigate()
   const authUser = getAuth()
 
+  // Older version of initializing gapi for sending the token to the backend
+  // Not used in this implementation
   // useEffect(() => {
   //   gapi.load('client:auth2', () => {
   //     gapi.auth2.init({
