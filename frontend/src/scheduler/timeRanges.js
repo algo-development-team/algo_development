@@ -14,3 +14,5 @@ export const getTimeRangesFromEvents = (events) => {
   }
   return timeRanges
 }
+
+export const getEmptyTimeRanges = (timeStartDay, timeEndDay, timeRanges) => {}
