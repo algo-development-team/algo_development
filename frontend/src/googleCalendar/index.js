@@ -5,12 +5,15 @@
 
 import { getCalendarEvents, insertCalenderEvent } from 'gapiHandlers'
 
+/***
+ * requirements:
+ * timeMin and timeMax are in ISO Date String format
+ * timeMin and timeMax should already be formatted
+ * use the following code for formatting: (automatically handles timezone as well, so no need to worry about that)
+ * const timeMin = moment('2022-11-13T00:00:00').toISOString()
+ * const timeMax = moment('2022-11-14T00:00:00').toISOString()
+ * ***/
 export const fetchEvents = async (timeMin, timeMax, calendarId = 'primary') => {
-  // timeMin and timeMax are in ISO Date String format
-  // timeMin and timeMax should already be formatted
-  // use the following code for formatting: (automatically handles timezone as well, so no need to worry about that)
-  // const timeMin = moment('2022-11-13T00:00:00').toISOString()
-  // const timeMax = moment('2022-11-14T00:00:00').toISOString()
   const fetchOption = {
     calendarId: calendarId,
     timeMin: timeMin,
@@ -23,6 +26,11 @@ export const fetchEvents = async (timeMin, timeMax, calendarId = 'primary') => {
   return events
 }
 
+/***
+ * requirements:
+ * the passed dateTimes should already be in the correct format
+ * dateTime format example: '2015-05-28T09:00:00-07:00'
+ * ***/
 export const insertEvent = async (
   calendarId = 'primary',
   startDateTime,
@@ -31,8 +39,6 @@ export const insertEvent = async (
   summary,
   description,
 ) => {
-  // the passed dateTimes should already be in the correct format
-  // dateTime format example: '2015-05-28T09:00:00-07:00'
   const insertOption = {
     calendarId: calendarId,
     start: {
