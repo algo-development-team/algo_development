@@ -15,7 +15,3 @@ export const fetchAllEvents = async (timeMin, timeMax, calendarIds) => {
   }
   return events
 }
-
-export const filterAllDayEvents = (events) => {
-  return events.filter((event) => event.start.dateTime)
-}

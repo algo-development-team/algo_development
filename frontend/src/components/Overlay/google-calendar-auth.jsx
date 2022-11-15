@@ -3,8 +3,7 @@ import axios from 'axios'
 
 export const GoogleCalendarAuth = ({ closeOverlay }) => {
   const responseGoogle = (response) => {
-    console.log(response)
-
+    // console.log(response) // contains access token
     // Request to Server-side
     // Not used in current implementation
     // axios
