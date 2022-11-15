@@ -49,7 +49,7 @@
     }
 
     &--add-task {
-      background-color: #de4c4a;
+      background-color: #4a4cde;
       color: #feffff;
     }
     &--cancel {
@@ -65,9 +65,9 @@
     color: #808080;
     margin-top: 0.6rem;
     &:hover {
-      color: #de4c4a;
+      color: #4a4cde;
       .add-task__icon {
-        background-color: #de4c4a;
+        background-color: #4a4cde;
 
         svg {
           stroke: #feffff;
@@ -81,7 +81,7 @@
     display: flex;
     place-items: center;
     svg {
-      stroke: #de4c4a;
+      stroke: #4a4cde;
     }
   }
 }

@@ -1,4 +1,4 @@
-@import "scss/mixins.scss";
+@import 'scss/mixins.scss';
 .add-project {
   border-radius: 5px;
   &__modal {
@@ -48,7 +48,7 @@
         color: #fefbfb;
       }
       .btn__add-project {
-        background-color: tomato;
+        background-color: #4763ff;
       }
       .btn__cancel {
         margin-right: 0.4rem;
@@ -181,27 +181,28 @@
 
   .selected.add-project__set-view-type--option {
     .add-project__set-view-type--preview {
-      border-color: tomato;
+      border-color: #4763ff;
     }
-    .add-project__set-view-type--description > .add-project__set-view-type--radio {
-      background-color: tomato;
-      border: 2px solid tomato;
+    .add-project__set-view-type--description
+      > .add-project__set-view-type--radio {
+      background-color: #4763ff;
+      border: 2px solid #4763ff;
       color: #fefbfb;
     }
   }
 }
 
 .preview__list {
-  background-image: url("../../../../assets/svg/1.svg");
+  background-image: url('../../../../assets/svg/1.svg');
 
   &:hover {
-    background-image: url("../../../../assets/svg/list-hover.svg") !important;
+    background-image: url('../../../../assets/svg/list-hover.svg') !important;
   }
 }
 .preview__board {
-  background-image: url("../../../../assets/svg/2.svg");
+  background-image: url('../../../../assets/svg/2.svg');
   &:hover {
-    background-image: url("../../../../assets/svg/board-hover.svg") !important;
+    background-image: url('../../../../assets/svg/board-hover.svg') !important;
   }
 
   @include respond(phone) {

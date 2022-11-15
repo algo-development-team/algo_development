@@ -1,18 +1,18 @@
 @font-face {
-  font-family: "Graphik";
-  src: url("../../assets/fonts/Graphik-Regular.woff2") format("woff2");
+  font-family: 'Graphik';
+  src: url('../../assets/fonts/Graphik-Regular.woff2') format('woff2');
 }
 @font-face {
-  font-family: "Graphik-semibold";
-  src: url("../../assets/fonts/Graphik-Semibold.woff2") format("woff2");
+  font-family: 'Graphik-semibold';
+  src: url('../../assets/fonts/Graphik-Semibold.woff2') format('woff2');
 }
 
-@import "scss/mixins.scss";
+@import 'scss/mixins.scss';
 .landing-page {
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   color: #575757;
-  font-family: "Graphik", sans-serif;
+  font-family: 'Graphik', sans-serif;
   width: 100%;
   position: relative;
   .intro__header {
@@ -65,22 +65,21 @@
       }
 
       &:last-of-type {
-       
       }
     }
     &--link:hover {
       color: #1f1f1f;
-      border-bottom: #e44232 1px solid;
+      border-bottom: #3242e4 1px solid;
       background-color: #fafafa;
     }
 
     &--cta {
       color: #fff;
-      background-color: #e44232;
+      background-color: #3242e4;
       font-size: 1rem;
       line-height: 1.5;
       letter-spacing: 0;
-      font-family: "Graphik-semibold";
+      font-family: 'Graphik-semibold';
       padding: 0 1rem;
       min-height: 2.5rem;
       border-radius: 8px;
@@ -129,11 +128,11 @@
     }
     &--cta {
       color: #fff;
-      background-color: #e44232;
+      background-color: #3242e4;
       font-size: 1rem;
       line-height: 1.25;
       letter-spacing: 0;
-      font-family: "Graphik-semibold";
+      font-family: 'Graphik-semibold';
       padding: 0.2rem 1rem;
       min-height: 2.5rem;
       border-radius: 8px;
@@ -141,7 +140,7 @@
       display: inline-flex;
       justify-content: center;
       align-items: center;
-      border: 1px solid #e44232;
+      border: 1px solid #3242e4;
       min-width: 100px;
     }
 
@@ -167,7 +166,7 @@
     letter-spacing: -0.04em;
     font-weight: 600;
     text-align: center;
-    font-family: "Graphik-semibold", sans-serif;
+    font-family: 'Graphik-semibold', sans-serif;
     color: #1f1f1f;
     //width: 40%;
     text-align: center;

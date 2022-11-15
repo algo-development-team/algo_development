@@ -21,16 +21,16 @@
 }
 
 .light .add-project__set-view-type--preview.preview__list {
-  background-image: url("../../../../assets/svg/list-light.svg") !important;
+  background-image: url('../../../../assets/svg/list-light.svg') !important;
   &:hover {
-    background-image: url("../../../../assets/svg/list-hover-2.svg") !important;
+    background-image: url('../../../../assets/svg/list-hover-2.svg') !important;
   }
 }
 .light .add-project__set-view-type--preview.preview__board {
-  background-image: url("../../../../assets/svg/board-light.svg") !important;
+  background-image: url('../../../../assets/svg/board-light.svg') !important;
 
   &:hover {
-    background-image: url("../../../../assets/svg/board-hover-2.svg") !important;
+    background-image: url('../../../../assets/svg/board-hover-2.svg') !important;
   }
 }
 
@@ -57,10 +57,16 @@
   }
 }
 
-.light .add-project__set-view-type .selected.add-project__set-view-type--option .add-project__set-view-type--preview {
-  border-color: #d1453b;
+.light
+  .add-project__set-view-type
+  .selected.add-project__set-view-type--option
+  .add-project__set-view-type--preview {
+  border-color: #3b45d1;
 }
 
-.light .add-project__set-view-type .selected.add-project__set-view-type--option .add-project__set-view-type--radio {
-  background-color: #d1453b;
+.light
+  .add-project__set-view-type
+  .selected.add-project__set-view-type--option
+  .add-project__set-view-type--radio {
+  background-color: #3b45d1;
 }

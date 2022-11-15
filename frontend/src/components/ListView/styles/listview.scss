@@ -1,4 +1,4 @@
-@import "scss/mixins.scss";
+@import 'scss/mixins.scss';
 .task {
   position: relative;
   min-height: 1rem;
@@ -102,7 +102,7 @@
   }
 
   &__button {
-    background-color: #de4c4a;
+    background-color: #4a4cde;
     //dark theme
     color: hsla(0, 0%, 100%, 0.87);
     display: block;

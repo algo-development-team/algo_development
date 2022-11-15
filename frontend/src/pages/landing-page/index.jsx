@@ -1,6 +1,6 @@
 import illustration from 'assets/svg/landing-illustration.webp'
-import { ReactComponent as LogoMobile } from 'assets/svg/logo-mobile.svg'
-import { ReactComponent as Logo } from 'assets/svg/logo.svg'
+import { ReactComponent as LogoMobile } from 'assets/svg/new-logo-mobile.svg'
+import { ReactComponent as Logo } from 'assets/svg/new-logo.svg'
 import { Link } from 'react-router-dom'
 import './main.scss'
 export const LandingPage = () => {
@@ -55,8 +55,8 @@ export const LandingPage = () => {
             schedule all TODOS in life.
           </h1>
           <h2 className='hero-text__sub'>
-            Become focused, organized, and calm with Todoist. The world’s #1
-            task manager and to-do list app.
+            Become focused, organized, and calm with Algo. The world’s #1 task
+            manager and to-do list app.
           </h2>
           <Link to='/signin' className='intro__hero--cta'>
             Start for free

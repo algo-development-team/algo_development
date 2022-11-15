@@ -1,9 +1,9 @@
-@import "scss/mixins.scss";
+@import 'scss/mixins.scss';
 .auth-page {
   display: flex;
   justify-content: center;
   width: 100%;
-  font-family: "Segoe UI", sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   color: #000;
   overflow-x: hidden;
   &__container {
@@ -148,7 +148,7 @@
   }
   .toggle_password {
     position: relative;
-    input[type="password"] {
+    input[type='password'] {
       padding-right: 40px;
       width: 100%;
     }
@@ -166,7 +166,7 @@
 
   .submit-button {
     background: 0;
-    background-color: #db4c3f;
+    background-color: #333;
     color: #fff !important;
     text-shadow: none;
     border: 1px solid transparent;
@@ -179,8 +179,8 @@
     }
 
     &:hover {
-      border-color: #b0281a;
-      background-color: #c53727;
+      border-color: #1a28b0;
+      background-color: #2737c5;
       box-shadow: 0 1px 2px #00000026;
     }
   }
@@ -296,7 +296,7 @@
     color: #666;
   }
 
-  .ring__spinner{
+  .ring__spinner {
     margin-left: 2em;
     margin-top: -10px;
     position: absolute;
