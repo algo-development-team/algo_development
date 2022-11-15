@@ -3,7 +3,7 @@ import { fetchAllEvents } from './events'
 import {
   getTimesWithInfo,
   getTimesWithInfoSorted,
-  getTimeRanges,
+  getAvailableTimeRanges,
   timeType,
 } from './timeRanges'
 import { getUserInfo } from 'handleUserInfo'
@@ -35,12 +35,12 @@ export const scheduleToday = async (userId) => {
       dayRange[1].subtract(1, 'day')
     }
     const eventsByTypeForToday = await getEventsByTypeForToday()
-    const timeRanges = await getTimeRangesForDay(
+    const timeRangesForDay = await getTimeRangesForDay(
       eventsByTypeForToday.timeBlocked,
       dayRange[0],
       dayRange[1],
     )
-    console.log('availableTimeRanges:', timeRanges) // DEBUGGING
+    console.log('timeRanges', timeRangesForDay) // DEBUGGING
   } catch (error) {
     console.log(error)
     return { checklist: [], failed: true }
@@ -80,6 +80,7 @@ export const getEventsByTypeForToday = async () => {
  * events: Google Calendar API events (time-blocked)
  * timeStartDay: moment object
  * timeEndDay: moment object
+ * currently only returns available time ranges, can be expanded in future to return blocked time ranges as well
  * ***/
 export const getTimeRangesForDay = async (events, timeStartDay, timeEndDay) => {
   console.log('events:', events) // DEBUGGING
@@ -100,8 +101,8 @@ export const getTimeRangesForDay = async (events, timeStartDay, timeEndDay) => {
     timeEndDayWithInfo,
   ]
   const timesWithInfoSorted = getTimesWithInfoSorted(timesWithInfoCombined)
-  const timeRanges = getTimeRanges(timesWithInfoSorted)
-  return timeRanges
+  const timeRangesForDay = getAvailableTimeRanges(timesWithInfoSorted)
+  return timeRangesForDay
 }
 
 /***

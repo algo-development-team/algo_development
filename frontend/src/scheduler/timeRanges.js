@@ -46,40 +46,41 @@ export const getTimesWithInfoSorted = (timesWithInfo) => {
  * requirements:
  * timesWithInfo: { time: moment object, type: timeType }
  * timesWithInfo must be sorted by time
- * currently just getting the available time ranges within the day
  * ***/
-export const getTimeRanges = (timesWithInfo) => {
-  console.log('timesWithInfo:', timesWithInfo) // DEBUGGING
-  const emptyTimeRanges = []
+export const getAvailableTimeRanges = (timesWithInfo) => {
+  const availableTimeRanges = []
   let dayStarted = false
-  let startEmptyTimeRangeIdx = -1
+  let startAvailableTimeRangeIdx = -1
   for (let i = 0; i < timesWithInfo.length; i++) {
-    // makes sure only empty time ranges within the day are considered
+    // makes sure only time ranges within the day are considered
     if (timesWithInfo[i].type === timeType.startDay) {
       dayStarted = true
+      startAvailableTimeRangeIdx = i
     } else if (timesWithInfo[i].type === timeType.endDay) {
-      dayStarted = false
-    }
-
-    if (
-      timesWithInfo[i].type === timeType.startDay ||
-      timesWithInfo[i].type === timeType.endEvent
-    ) {
-      if (dayStarted) {
-        startEmptyTimeRangeIdx = i
-      }
-    } else if (
-      timesWithInfo[i].type === timeType.endDay ||
-      timesWithInfo[i].type === timeType.startEvent
-    ) {
-      if (startEmptyTimeRangeIdx !== -1) {
-        emptyTimeRanges.push({
-          start: timesWithInfo[startEmptyTimeRangeIdx].time,
+      if (startAvailableTimeRangeIdx !== -1) {
+        availableTimeRanges.push({
+          start: timesWithInfo[startAvailableTimeRangeIdx].time,
           end: timesWithInfo[i].time,
+          id: null,
         })
       }
-      startEmptyTimeRangeIdx = -1
+      startAvailableTimeRangeIdx = -1
+
+      dayStarted = false
+    } else if (timesWithInfo[i].type === timeType.endEvent) {
+      if (dayStarted) {
+        startAvailableTimeRangeIdx = i
+      }
+    } else if (timesWithInfo[i].type === timeType.startEvent) {
+      if (startAvailableTimeRangeIdx !== -1) {
+        availableTimeRanges.push({
+          start: timesWithInfo[startAvailableTimeRangeIdx].time,
+          end: timesWithInfo[i].time,
+          id: null,
+        })
+      }
+      startAvailableTimeRangeIdx = -1
     }
   }
-  return emptyTimeRanges
+  return availableTimeRanges
 }
