@@ -101,7 +101,9 @@ export const getTimeRangesForDay = async (events, timeStartDay, timeEndDay) => {
     timeEndDayWithInfo,
   ]
   const timesWithInfoSorted = getTimesWithInfoSorted(timesWithInfoCombined)
-  const timeRangesForDay = getAvailableTimeRanges(timesWithInfoSorted)
+  const timeRangesForDay = {
+    availableTimeRanges: getAvailableTimeRanges(timesWithInfoSorted),
+  }
   return timeRangesForDay
 }
 
