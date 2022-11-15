@@ -29,7 +29,12 @@ export const AddChecklist = () => {
             setShowDialog('GOOGLE_CALENDAR_AUTH')
           }
         }}
-        style={{ color: 'white' }}
+        style={{
+          color: 'white',
+          borderColor: 'white',
+          borderWidth: '1px',
+          backgroundColor: '#555',
+        }}
       >
         Generate Schedule
       </button>

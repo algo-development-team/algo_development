@@ -7,6 +7,7 @@ import './main.scss'
 import { Notifications } from './notifications'
 import { QuickAddTask } from './quick-add-task'
 import { AddChecklist } from './add-checklist'
+import { GoogleCalendarButton } from './google-calendar'
 export const Header = (props) => {
   return (
     <div className='header'>
@@ -17,8 +18,9 @@ export const Header = (props) => {
       <div className='header__right'>
         <AddChecklist />
         <QuickAddTask />
-        <Info />
-        <Notifications />
+        <GoogleCalendarButton />
+        {/* <Info />
+        <Notifications /> */}
         <Avatar />
       </div>
     </div>
