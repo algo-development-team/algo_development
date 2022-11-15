@@ -85,22 +85,17 @@ export const getEventsByTypeForToday = async () => {
 export const getTimeRangesForDay = async (events, timeStartDay, timeEndDay) => {
   console.log('events:', events) // DEBUGGING
   const timesWithInfo = getTimesWithInfo(events)
-  const timeStartDayWithInfo = {
+  timesWithInfo.push({
     time: timeStartDay,
     type: timeType.startDay,
     id: null,
-  }
-  const timeEndDayWithInfo = {
+  })
+  timesWithInfo.push({
     time: timeEndDay,
     type: timeType.endDay,
     id: null,
-  }
-  const timesWithInfoCombined = [
-    timeStartDayWithInfo,
-    ...timesWithInfo,
-    timeEndDayWithInfo,
-  ]
-  const timesWithInfoSorted = getTimesWithInfoSorted(timesWithInfoCombined)
+  })
+  const timesWithInfoSorted = getTimesWithInfoSorted(timesWithInfo)
   const timeRangesForDay = {
     availableTimeRanges: getAvailableTimeRanges(timesWithInfoSorted),
   }
