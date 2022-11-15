@@ -46,7 +46,7 @@ export const batchWriteIcebreakerTasks = async (userId) => {
         name: 'Charcoal',
         hex: '#808080',
       },
-      projectIsList: true,
+      projectIsList: false,
       projectIsWork: true,
     }
     const projectsDocRef = doc(collection(db, 'user', `${userId}/projects`))
