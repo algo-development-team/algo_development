@@ -14,10 +14,13 @@ export const ProjectName = () => {
 
   const { selectedProjectName } = selectedProject
   const customProjectTitle = getProjectTitle(projects, projectId)
+
   return (
     <h1 className='project__name'>
-      {customProjectTitle || defaultGroup} (
-      {selectedProject.projectIsWork ? 'work' : 'personal'})
+      {customProjectTitle || defaultGroup}{' '}
+      {!selectedProject.defaultProject && (
+        <>({selectedProject.projectIsWork ? 'work' : 'personal'})</>
+      )}
     </h1>
   )
 }
