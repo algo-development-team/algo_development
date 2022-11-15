@@ -31,7 +31,16 @@ export const GoogleCalendarAuth = ({ closeOverlay }) => {
 
   return (
     <div className='option__overlay' onClick={(event) => closeOverlay(event)}>
-      <div className='quick-add-task__wrapper'>
+      <div
+        className='quick-add-task__wrapper'
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingTop: '100px',
+          paddingBottom: '100px',
+        }}
+      >
         <GoogleLogin
           clientId={process.env.REACT_APP_CLIENT_ID}
           buttonText='Sign in & Authorize Calendar'
