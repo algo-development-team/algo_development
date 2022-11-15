@@ -1,0 +1,17 @@
+User Setting Fields:
+- sleepTimeRange
+- workTimeRane
+- workDays
+- rankings
+
+Rankings: (minimal to get validation)
+Select urgent/deep/shallow option for each time range:
+- early morning (7am-9am)
+- morning (9am-11am)
+- noon (11am-1pm)
+- afternoon (1pm-3pm)
+- late afternoon (3pm-5pm)
+- evening (5pm-7pm)
+
+Actions:
+- set isSetup to true
