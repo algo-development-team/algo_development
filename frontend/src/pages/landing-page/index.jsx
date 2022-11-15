@@ -1,4 +1,4 @@
-import illustration from 'assets/svg/landing-illustration.webp'
+import illustration from 'assets/svg/main-background.webp'
 import { ReactComponent as LogoMobile } from 'assets/svg/new-logo-mobile.svg'
 import { ReactComponent as Logo } from 'assets/svg/new-logo.svg'
 import { Link } from 'react-router-dom'
@@ -55,8 +55,8 @@ export const LandingPage = () => {
             schedule all TODOS in life.
           </h1>
           <h2 className='hero-text__sub'>
-            Become focused, organized, and calm with Algo. The world’s #1 task
-            manager and to-do list app.
+            First AI assistant to provide personalized scheduling for all your
+            tasks.
           </h2>
           <Link to='/signin' className='intro__hero--cta'>
             Start for free
