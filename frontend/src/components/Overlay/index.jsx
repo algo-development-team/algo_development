@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 import { ConfrimDeleteProject } from 'components/ConfirmDeleteProject'
 import { SetNewTaskProjectPopper } from 'components/dropdowns/set-new-task-project-popper'
 import { SetNewTaskSchedulePopper } from 'components/dropdowns/set-new-task-schedule-popper'
@@ -12,6 +13,7 @@ import './main.scss'
 import { ProjectEditor } from './ProjectEditor'
 import { QuickAddTaskDialog } from './quick-add-task-dialog'
 import { GoogleCalendarAuth } from './google-calendar-auth'
+import { Setting } from './setting'
 export const Overlay = () => {
   const { showDialog, setShowDialog, dialogProps, setDialogProps } =
     useOverlayContextValue()
@@ -29,6 +31,8 @@ export const Overlay = () => {
         return <QuickAddTaskDialog closeOverlay={closeOverlay} />
       case 'GOOGLE_CALENDAR_AUTH':
         return <GoogleCalendarAuth closeOverlay={closeOverlay} />
+      case 'SETTING':
+        return <Setting closeOverlay={closeOverlay} />
       case 'USER_OPTIONS':
         return (
           <UserOptions
@@ -110,7 +114,6 @@ export const Overlay = () => {
             closeOverlay={closeOverlay}
           />
         )
-
       case 'CONFIRM_DELETE':
         return (
           <ConfrimDeleteProject
