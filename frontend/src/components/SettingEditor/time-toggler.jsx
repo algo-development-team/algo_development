@@ -5,7 +5,7 @@ export const TimeToggler = ({ time, changeTime, isHour, timeRangeTypeVal }) => {
   return (
     <div className='display-row'>
       <h3
-        className={`reg-left-margin field-width${
+        className={`reg-left-margin time-field${
           isHour ? '__hour' : '__minute'
         }`}
       >

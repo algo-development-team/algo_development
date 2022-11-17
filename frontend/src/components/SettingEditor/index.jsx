@@ -44,7 +44,7 @@ export const SettingEditor = ({ closeOverlay }) => {
   const [workEndTimeHour, setWorkEndTimeHour] = useState(0)
   const [workEndTimeMin, setWorkEndTimeMin] = useState(0)
   const [workDays, setWorkDays] = useState(new Array(7).fill(false))
-  const [rankingPreferences, setRankingsPreferences] = useState(
+  const [rankingPreferences, setRankingPreferences] = useState(
     new Array(6).fill(0),
   )
   const [disabled, setDisabled] = useState(true)
@@ -81,7 +81,7 @@ export const SettingEditor = ({ closeOverlay }) => {
     setWorkEndTimeHour(workTimesData[1][0])
     setWorkEndTimeMin(workTimesData[1][1])
     setWorkDays(userInfo.workDays)
-    setRankingsPreferences(userInfo.rankingPreferences)
+    setRankingPreferences(userInfo.rankingPreferences)
   }
 
   // note: might not need?
@@ -302,6 +302,25 @@ export const SettingEditor = ({ closeOverlay }) => {
     }
   }
 
+  const getTimePeriod = (numPeriod) => {
+    switch (numPeriod) {
+      case 0:
+        return 'Early morning'
+      case 1:
+        return 'Morning'
+      case 2:
+        return 'Noon'
+      case 3:
+        return 'Afternoon'
+      case 4:
+        return 'Late Afternoon'
+      case 5:
+        return 'Evening'
+      default:
+        return ''
+    }
+  }
+
   return (
     <div
       className={'add-task__wrapper quick-add__wrapper'}
@@ -381,17 +400,9 @@ export const SettingEditor = ({ closeOverlay }) => {
           <div>
             {workDays.map((workDay, i) => (
               <button
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  backgroundColor: workDays[i] ? '#3f4cda' : '#999',
-                  borderRadius: '50%',
-                  color: 'white',
-                  fontSize: '12px',
-                  fontWeight: 600,
-                  marginLeft: '5px',
-                  marginRight: '5px',
-                }}
+                className={`work-day-btn${
+                  workDay ? '__selected' : '__not-selected'
+                }`}
                 onClick={() => {
                   const newWorkDays = [...workDays]
                   newWorkDays[i] = !newWorkDays[i]
@@ -402,7 +413,29 @@ export const SettingEditor = ({ closeOverlay }) => {
               </button>
             ))}
           </div>
-          <h4>Select Preferences</h4>
+          <h4>During these time periods, I prefer...</h4>
+          <div style={{ marginBottom: '40px' }}>
+            {rankingPreferences.map((rankingPreference, i) => (
+              <div className='display-row time-period__row'>
+                <p className='time-period__label'>{getTimePeriod(i)}</p>
+                <select
+                  value={rankingPreference}
+                  className='select-preference'
+                  onChange={(e) => {
+                    const newRankingPreferences = [...rankingPreferences]
+                    newRankingPreferences[i] = e.target.value
+                    setRankingPreferences(newRankingPreferences)
+                  }}
+                >
+                  <option value='0' style={{ backgroundColor: 'transparent' }}>
+                    Urgent, important Work
+                  </option>
+                  <option value='1'>Deep, focus work</option>
+                  <option value='2'>Shallow, easy work</option>
+                </select>
+              </div>
+            ))}
+          </div>
           <button
             className=' action add-task__actions--add-task'
             type='submit'

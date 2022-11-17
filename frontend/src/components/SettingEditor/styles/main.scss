@@ -147,12 +147,58 @@
   margin-left: 10px;
 }
 
-.field-width {
+.time-field {
   &__hour {
     width: 24px;
   }
 
   &__minute {
     width: 36px;
+  }
+}
+
+.work-day-btn {
+  &__selected {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: #3f4cda;
+  }
+  &__not-selected {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 5px;
+    margin-right: 5px;
+    background-color: #999;
+  }
+}
+
+.select-preference {
+  border: 0;
+  background-color: transparent;
+  color: inherit;
+  &:focus {
+    outline: unset;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.time-period {
+  &__label {
+    width: 120px;
+  }
+  &__row {
+    margin-bottom: 10px;
   }
 }
