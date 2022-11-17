@@ -202,3 +202,17 @@
     margin-bottom: 10px;
   }
 }
+
+.preference-color {
+  &__shallow {
+    color: #058527;
+  }
+
+  &__urgent {
+    color: #ad6200;
+  }
+
+  &__deep {
+    color: #246fe0;
+  }
+}

@@ -321,6 +321,8 @@ export const SettingEditor = ({ closeOverlay }) => {
     }
   }
 
+  console.log('rankingPreferences:', rankingPreferences) // DEBUGGING
+
   return (
     <div
       className={'add-task__wrapper quick-add__wrapper'}
@@ -420,18 +422,22 @@ export const SettingEditor = ({ closeOverlay }) => {
                 <p className='time-period__label'>{getTimePeriod(i)}</p>
                 <select
                   value={rankingPreference}
-                  className='select-preference'
+                  className={`select-preference preference-color${
+                    rankingPreference === 0
+                      ? '__urgent'
+                      : rankingPreference === 1
+                      ? '__deep'
+                      : '__shallow'
+                  }`}
                   onChange={(e) => {
                     const newRankingPreferences = [...rankingPreferences]
-                    newRankingPreferences[i] = e.target.value
+                    newRankingPreferences[i] = parseInt(e.target.value)
                     setRankingPreferences(newRankingPreferences)
                   }}
                 >
-                  <option value='0' style={{ backgroundColor: 'transparent' }}>
-                    Urgent, important Work
-                  </option>
-                  <option value='1'>Deep, focus work</option>
-                  <option value='2'>Shallow, easy work</option>
+                  <option value={0}>Urgent, important Work</option>
+                  <option value={1}>Deep, focus work</option>
+                  <option value={2}>Shallow, easy work</option>
                 </select>
               </div>
             ))}
