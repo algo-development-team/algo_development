@@ -112,3 +112,47 @@
   margin-bottom: unset !important;
   border-bottom: unset;
 }
+
+.arrow {
+  border: solid #999;
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 2px;
+  margin: 1px;
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+
+.display-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.display-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.reg-left-margin {
+  margin-left: 10px;
+}
+
+.field-width {
+  &__hour {
+    width: 24px;
+  }
+
+  &__minute {
+    width: 36px;
+  }
+}

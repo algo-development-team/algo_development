@@ -17,6 +17,7 @@ import { db } from '_firebase'
 import './styles/main.scss'
 import './styles/light.scss'
 import { getUserInfo } from '../../handleUserInfo'
+import { TimeToggler } from './time-toggler'
 
 // note:
 // 1. logic and updating fields
@@ -314,97 +315,67 @@ export const SettingEditor = ({ closeOverlay }) => {
         style={{ width: '100%' }}
       >
         <div className={'add-task__actions quick-add__actions'}>
-          <div>
-            <span>{sleepStartTimeHour}</span>
-            <button
-              onClick={() => changeTime(true, true, timeRangeType.sleepStart)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, true, timeRangeType.sleepStart)}
-            >
-              down
-            </button>
-            <span>{sleepStartTimeMin}</span>
-            <button
-              onClick={() => changeTime(true, false, timeRangeType.sleepStart)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, false, timeRangeType.sleepStart)}
-            >
-              down
-            </button>
-            <span>{sleepEndTimeHour}</span>
-            <button
-              onClick={() => changeTime(true, true, timeRangeType.sleepEnd)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, true, timeRangeType.sleepEnd)}
-            >
-              down
-            </button>
-            <span>{sleepEndTimeMin}</span>
-            <button
-              onClick={() => changeTime(true, false, timeRangeType.sleepEnd)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, false, timeRangeType.sleepEnd)}
-            >
-              down
-            </button>
+          <h4>Sleep Hours</h4>
+          <div className='display-row'>
+            <TimeToggler
+              time={sleepStartTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.sleepStart}
+            />
+            <TimeToggler
+              time={sleepStartTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.sleepStart}
+            />
+            <h3 className='reg-left-margin'>to</h3>
+            <TimeToggler
+              time={sleepEndTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.sleepEnd}
+            />
+            <TimeToggler
+              time={sleepEndTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.sleepEnd}
+            />
           </div>
-          <div>
-            <span>{workStartTimeHour}</span>
-            <button
-              onClick={() => changeTime(true, true, timeRangeType.workStart)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, true, timeRangeType.workStart)}
-            >
-              down
-            </button>
-            <span>{workStartTimeMin}</span>
-            <button
-              onClick={() => changeTime(true, false, timeRangeType.workStart)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, false, timeRangeType.workStart)}
-            >
-              down
-            </button>
-            <span>{workEndTimeHour}</span>
-            <button
-              onClick={() => changeTime(true, true, timeRangeType.workEnd)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, true, timeRangeType.workEnd)}
-            >
-              down
-            </button>
-            <span>{workEndTimeMin}</span>
-            <button
-              onClick={() => changeTime(true, false, timeRangeType.workEnd)}
-            >
-              up
-            </button>
-            <button
-              onClick={() => changeTime(false, false, timeRangeType.workEnd)}
-            >
-              down
-            </button>
+          <h4>Work Hours</h4>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <TimeToggler
+              time={workStartTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.workStart}
+            />
+            <TimeToggler
+              time={workStartTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.workStart}
+            />
+            <h3 className='reg-left-margin'>to</h3>
+            <TimeToggler
+              time={workEndTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.workEnd}
+            />
+            <TimeToggler
+              time={workEndTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.workEnd}
+            />
           </div>
           <h4>Select Working Days</h4>
           <div>
@@ -431,6 +402,7 @@ export const SettingEditor = ({ closeOverlay }) => {
               </button>
             ))}
           </div>
+          <h4>Select Preferences</h4>
           <button
             className=' action add-task__actions--add-task'
             type='submit'
