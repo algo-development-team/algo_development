@@ -202,7 +202,7 @@
   }
 }
 
-.preference-color {
+.text-color {
   &__shallow {
     color: #058527;
   }
@@ -213,5 +213,9 @@
 
   &__deep {
     color: #246fe0;
+  }
+
+  &__error {
+    color: #dd4b39;
   }
 }

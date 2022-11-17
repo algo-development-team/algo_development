@@ -34,6 +34,7 @@ export const SettingEditor = ({ closeOverlay }) => {
     new Array(6).fill(0),
   )
   const [disabled, setDisabled] = useState(true)
+  const [errorMsg, setErrorMsg] = useState('')
   const { isLight } = useThemeContextValue()
 
   useEffect(() => {
@@ -64,6 +65,9 @@ export const SettingEditor = ({ closeOverlay }) => {
         const userInfo = userInfoData.userInfoDoc.data()
         setDefaultUserInfo(userInfo)
         initializeUserInfo(userInfo)
+        setErrorMsg('')
+      } else {
+        setErrorMsg('Cannot load user info, please try again later.')
       }
     }
 
@@ -278,8 +282,6 @@ export const SettingEditor = ({ closeOverlay }) => {
     )
     if (validationResult) {
       applyChangeTime(changeInTime.hour, changeInTime.min, timeRangeTypeVal)
-    } else {
-      // error handling
     }
   }
 
@@ -337,6 +339,7 @@ export const SettingEditor = ({ closeOverlay }) => {
         style={{ width: '100%' }}
       >
         <div className={'add-task__actions quick-add__actions'}>
+          {errorMsg !== '' && <p className='text-color__error'>*{errorMsg}</p>}
           <h4>Sleep Hours</h4>
           <div className='display-row'>
             <TimeToggler
@@ -423,7 +426,7 @@ export const SettingEditor = ({ closeOverlay }) => {
                 <p className='time-period__label'>{getTimePeriod(i)}</p>
                 <select
                   value={rankingPreference}
-                  className={`select-preference preference-color${
+                  className={`select-preference text-color${
                     rankingPreference === 0
                       ? '__urgent'
                       : rankingPreference === 1
@@ -460,7 +463,6 @@ export const SettingEditor = ({ closeOverlay }) => {
           </button>
         </div>
       </form>
-      )
     </div>
   )
 }
