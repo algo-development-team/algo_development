@@ -29,9 +29,11 @@ export const getUserInfo = async (userId) => {
 
 export const getDefaultUserInfo = () => {
   const defaultRankings = new Array(24).fill(50)
+  const defaultRankingPreferences = new Array(6).fill(0)
   const defaultUserInfo = {
     workTimeRange: '9:00-17:00',
     sleepTimeRange: '23:00-07:00',
+    rankingPreferences: defaultRankingPreferences,
     workDays: [false, true, true, true, true, true, false],
     isSetup: false,
     calendarId: null,

@@ -20,8 +20,12 @@ export const AddChecklist = () => {
             console.log(
               'Signed In (Google OAuth2 - Google Calendar API Access)',
             )
-            // Calling Scheduler Algorithm for Today
-            scheduleToday(currentUser.id)
+            if (!currentUser) {
+              alert('Please try again soon.')
+            } else {
+              // Calling Scheduler Algorithm for Today
+              scheduleToday(currentUser.id)
+            }
           } else if (signInStatus === 2) {
             console.log(
               'Not Signed In (Google OAuth2 - Google Calendar API Access)',

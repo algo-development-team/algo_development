@@ -1,12 +1,6 @@
 import moment from 'moment'
 import { roundUp15Min, roundDown15Min } from 'handleMoment'
-
-export const timeType = Object.freeze({
-  startEvent: 0,
-  endEvent: 1,
-  startDay: 2,
-  endDay: 3,
-})
+import { timeType } from 'components/enums'
 
 /***
  * requirements:

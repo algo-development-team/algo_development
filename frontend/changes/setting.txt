@@ -1,8 +1,29 @@
-User Setting Fields:
+Field Names:
+- isSetup
 - sleepTimeRange
-- workTimeRane
+- workTimeRange
 - workDays
-- rankings
+- deepRankingsPnw
+- deepRankingsPw
+- deepRankingsWw
+- shallowRankingsPnw
+- shallowRankingsPw
+- shallowRankingsWw
+- urgentRankingsPnw
+- urgentRankingsPw
+- urgentRankingsWw
+
+User Setting Fields:
+- sleepStartTimeHour
+- sleepStartTimeMin
+- sleepEndTimeHour
+- sleepEndTimeMin
+- workStartTimeHour
+- workStartTimeMin
+- workEndTimeHour
+- workEndTimeMin
+- workDays
+- rankingPreferences (urgent: 0, deep: 1, shallow: 2)
 
 Rankings: (minimal to get validation)
 Select urgent/deep/shallow option for each time range:

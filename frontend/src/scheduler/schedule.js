@@ -4,10 +4,10 @@ import {
   getTimesWithInfo,
   getTimesWithInfoSorted,
   getAvailableTimeRanges,
-  timeType,
 } from './timeRanges'
 import { getUserInfo } from 'handleUserInfo'
 import moment from 'moment'
+import { timeType } from 'components/enums'
 
 /***
  * Note: schedules the entire day, no matter what the current time is
