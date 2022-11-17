@@ -280,6 +280,27 @@ export const SettingEditor = ({ closeOverlay }) => {
     }
   }
 
+  const getDay = (numDay) => {
+    switch (numDay) {
+      case 0:
+        return 'Sun'
+      case 1:
+        return 'Mon'
+      case 2:
+        return 'Tue'
+      case 3:
+        return 'Wed'
+      case 4:
+        return 'Thu'
+      case 5:
+        return 'Fri'
+      case 6:
+        return 'Sat'
+      default:
+        return ''
+    }
+  }
+
   return (
     <div
       className={'add-task__wrapper quick-add__wrapper'}
@@ -384,6 +405,31 @@ export const SettingEditor = ({ closeOverlay }) => {
             >
               down
             </button>
+          </div>
+          <h4>Select Working Days</h4>
+          <div>
+            {workDays.map((workDay, i) => (
+              <button
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  backgroundColor: workDays[i] ? '#3f4cda' : '#999',
+                  borderRadius: '50%',
+                  color: 'white',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  marginLeft: '5px',
+                  marginRight: '5px',
+                }}
+                onClick={() => {
+                  const newWorkDays = [...workDays]
+                  newWorkDays[i] = !newWorkDays[i]
+                  setWorkDays(newWorkDays)
+                }}
+              >
+                {getDay(i)}
+              </button>
+            ))}
           </div>
           <button
             className=' action add-task__actions--add-task'
