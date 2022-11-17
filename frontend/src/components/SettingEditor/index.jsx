@@ -8,9 +8,6 @@ import './styles/light.scss'
 import { getUserInfo } from '../../handleUserInfo'
 import { TimeToggler } from './time-toggler'
 
-// note:
-// 1. error handling
-
 const timeRangeType = Object.freeze({
   sleepStart: 0,
   sleepEnd: 1,
