@@ -171,6 +171,7 @@ export const TaskEditor = ({
       setShowAddTaskForm(true)
     }
   }, [taskEditorToShow])
+
   return (
     <div
       className={`add-task__wrapper ${isQuickAdd && 'quick-add__wrapper'}`}

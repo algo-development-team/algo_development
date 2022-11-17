@@ -1,18 +1,7 @@
-import featherIcon from 'assets/svg/feather-sprite.svg'
 import { useThemeContextValue } from 'context'
-import { useTaskEditorContextValue } from 'context/board-task-editor-context'
-import {
-  addDoc,
-  collection,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore'
-import { useAuth, useProjects, useSelectedProject } from 'hooks'
-import moment from 'moment'
+import { collection, getDocs, query, updateDoc } from 'firebase/firestore'
+import { useAuth } from 'hooks'
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { db } from '_firebase'
 import './styles/main.scss'
 import './styles/light.scss'
@@ -20,10 +9,7 @@ import { getUserInfo } from '../../handleUserInfo'
 import { TimeToggler } from './time-toggler'
 
 // note:
-// 1. logic and updating fields
-// 2. handling update to Firebase
-// 3. error handling
-// 4. styling
+// 1. error handling
 
 const timeRangeType = Object.freeze({
   sleepStart: 0,
@@ -49,9 +35,29 @@ export const SettingEditor = ({ closeOverlay }) => {
   )
   const [disabled, setDisabled] = useState(true)
   const { isLight } = useThemeContextValue()
-  const [showUpdateUserInfoForm, setShowUpdateUserInfoForm] = useState(true)
 
   useEffect(() => {
+    const initializeUserInfo = (userInfo) => {
+      const sleepTimesData = userInfo.sleepTimeRange
+        .split('-')
+        .map((time) => time.split(':'))
+        .map((time) => time.map((hourMin) => parseInt(hourMin)))
+      const workTimesData = userInfo.workTimeRange
+        .split('-')
+        .map((time) => time.split(':'))
+        .map((time) => time.map((hourMin) => parseInt(hourMin)))
+      setSleepStartTimeHour(sleepTimesData[0][0])
+      setSleepStartTimeMin(sleepTimesData[0][1])
+      setSleepEndTimeHour(sleepTimesData[1][0])
+      setSleepEndTimeMin(sleepTimesData[1][1])
+      setWorkStartTimeHour(workTimesData[0][0])
+      setWorkStartTimeMin(workTimesData[0][1])
+      setWorkEndTimeHour(workTimesData[1][0])
+      setWorkEndTimeMin(workTimesData[1][1])
+      setWorkDays(userInfo.workDays)
+      setRankingPreferences(userInfo.rankingPreferences)
+    }
+
     const fetchUserInfo = async () => {
       if (currentUser) {
         const userInfoData = await getUserInfo(currentUser.id)
@@ -63,38 +69,6 @@ export const SettingEditor = ({ closeOverlay }) => {
 
     fetchUserInfo()
   }, [])
-
-  const initializeUserInfo = (userInfo) => {
-    const sleepTimesData = userInfo.sleepTimeRange
-      .split('-')
-      .map((time) => time.split(':'))
-      .map((time) => time.map((hourMin) => parseInt(hourMin)))
-    const workTimesData = userInfo.workTimeRange
-      .split('-')
-      .map((time) => time.split(':'))
-      .map((time) => time.map((hourMin) => parseInt(hourMin)))
-    setSleepStartTimeHour(sleepTimesData[0][0])
-    setSleepStartTimeMin(sleepTimesData[0][1])
-    setSleepEndTimeHour(sleepTimesData[1][0])
-    setSleepEndTimeMin(sleepTimesData[1][1])
-    setWorkStartTimeHour(workTimesData[0][0])
-    setWorkStartTimeMin(workTimesData[0][1])
-    setWorkEndTimeHour(workTimesData[1][0])
-    setWorkEndTimeMin(workTimesData[1][1])
-    setWorkDays(userInfo.workDays)
-    setRankingPreferences(userInfo.rankingPreferences)
-  }
-
-  // note: might not need?
-  const resetForm = (event) => {
-    event?.preventDefault()
-    initializeUserInfo(defaultUserInfo)
-    closeOverlay()
-  }
-
-  const handleChange = (e) => {
-    e.target.value.length < 1 ? setDisabled(true) : setDisabled(false)
-  }
 
   const formatMin = (min) => {
     const minStr = min.toString()
@@ -125,6 +99,7 @@ export const SettingEditor = ({ closeOverlay }) => {
     } catch (error) {
       console.log(error)
     }
+    closeOverlay()
   }
 
   const applyChangeTime = (hour, min, timeRangeTypeVal) => {
@@ -355,137 +330,137 @@ export const SettingEditor = ({ closeOverlay }) => {
         event.stopPropagation()
       }}
     >
-      {showUpdateUserInfoForm && (
-        <form
-          className='add-task'
-          onSubmit={(event) => updateUserInfoInFirestore(event)}
-          style={{ width: '100%' }}
-        >
-          <div className={'add-task__actions quick-add__actions'}>
-            <h4>Sleep Hours</h4>
-            <div className='display-row'>
-              <TimeToggler
-                time={sleepStartTimeHour}
-                changeTime={changeTime}
-                isHour={true}
-                timeRangeTypeVal={timeRangeType.sleepStart}
-              />
-              <TimeToggler
-                time={sleepStartTimeMin}
-                changeTime={changeTime}
-                isHour={false}
-                timeRangeTypeVal={timeRangeType.sleepStart}
-              />
-              <h3 className='reg-left-margin'>to</h3>
-              <TimeToggler
-                time={sleepEndTimeHour}
-                changeTime={changeTime}
-                isHour={true}
-                timeRangeTypeVal={timeRangeType.sleepEnd}
-              />
-              <TimeToggler
-                time={sleepEndTimeMin}
-                changeTime={changeTime}
-                isHour={false}
-                timeRangeTypeVal={timeRangeType.sleepEnd}
-              />
-            </div>
-            <h4>Work Hours</h4>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-            >
-              <TimeToggler
-                time={workStartTimeHour}
-                changeTime={changeTime}
-                isHour={true}
-                timeRangeTypeVal={timeRangeType.workStart}
-              />
-              <TimeToggler
-                time={workStartTimeMin}
-                changeTime={changeTime}
-                isHour={false}
-                timeRangeTypeVal={timeRangeType.workStart}
-              />
-              <h3 className='reg-left-margin'>to</h3>
-              <TimeToggler
-                time={workEndTimeHour}
-                changeTime={changeTime}
-                isHour={true}
-                timeRangeTypeVal={timeRangeType.workEnd}
-              />
-              <TimeToggler
-                time={workEndTimeMin}
-                changeTime={changeTime}
-                isHour={false}
-                timeRangeTypeVal={timeRangeType.workEnd}
-              />
-            </div>
-            <h4>Select Working Days</h4>
-            <div>
-              {workDays.map((workDay, i) => (
-                <button
-                  className={`work-day-btn${
-                    workDay ? '__selected' : '__not-selected'
+      (
+      <form
+        className='add-task'
+        onSubmit={(event) => updateUserInfoInFirestore(event)}
+        style={{ width: '100%' }}
+      >
+        <div className={'add-task__actions quick-add__actions'}>
+          <h4>Sleep Hours</h4>
+          <div className='display-row'>
+            <TimeToggler
+              time={sleepStartTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.sleepStart}
+            />
+            <TimeToggler
+              time={sleepStartTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.sleepStart}
+            />
+            <h3 className='reg-left-margin'>to</h3>
+            <TimeToggler
+              time={sleepEndTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.sleepEnd}
+            />
+            <TimeToggler
+              time={sleepEndTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.sleepEnd}
+            />
+          </div>
+          <h4>Work Hours</h4>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <TimeToggler
+              time={workStartTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.workStart}
+            />
+            <TimeToggler
+              time={workStartTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.workStart}
+            />
+            <h3 className='reg-left-margin'>to</h3>
+            <TimeToggler
+              time={workEndTimeHour}
+              changeTime={changeTime}
+              isHour={true}
+              timeRangeTypeVal={timeRangeType.workEnd}
+            />
+            <TimeToggler
+              time={workEndTimeMin}
+              changeTime={changeTime}
+              isHour={false}
+              timeRangeTypeVal={timeRangeType.workEnd}
+            />
+          </div>
+          <h4>Select Working Days</h4>
+          <div>
+            {workDays.map((workDay, i) => (
+              <button
+                className={`work-day-btn${
+                  workDay ? '__selected' : '__not-selected'
+                }`}
+                onClick={() => {
+                  const newWorkDays = [...workDays]
+                  newWorkDays[i] = !newWorkDays[i]
+                  setWorkDays(newWorkDays)
+                }}
+              >
+                {getDay(i)}
+              </button>
+            ))}
+          </div>
+          <h4>During these time periods, I prefer...</h4>
+          <div style={{ marginBottom: '40px' }}>
+            {rankingPreferences.map((rankingPreference, i) => (
+              <div className='display-row time-period__row'>
+                <p className='time-period__label'>{getTimePeriod(i)}</p>
+                <select
+                  value={rankingPreference}
+                  className={`select-preference preference-color${
+                    rankingPreference === 0
+                      ? '__urgent'
+                      : rankingPreference === 1
+                      ? '__deep'
+                      : '__shallow'
                   }`}
-                  onClick={() => {
-                    const newWorkDays = [...workDays]
-                    newWorkDays[i] = !newWorkDays[i]
-                    setWorkDays(newWorkDays)
+                  onChange={(e) => {
+                    const newRankingPreferences = [...rankingPreferences]
+                    newRankingPreferences[i] = parseInt(e.target.value)
+                    setRankingPreferences(newRankingPreferences)
                   }}
                 >
-                  {getDay(i)}
-                </button>
-              ))}
-            </div>
-            <h4>During these time periods, I prefer...</h4>
-            <div style={{ marginBottom: '40px' }}>
-              {rankingPreferences.map((rankingPreference, i) => (
-                <div className='display-row time-period__row'>
-                  <p className='time-period__label'>{getTimePeriod(i)}</p>
-                  <select
-                    value={rankingPreference}
-                    className={`select-preference preference-color${
-                      rankingPreference === 0
-                        ? '__urgent'
-                        : rankingPreference === 1
-                        ? '__deep'
-                        : '__shallow'
-                    }`}
-                    onChange={(e) => {
-                      const newRankingPreferences = [...rankingPreferences]
-                      newRankingPreferences[i] = parseInt(e.target.value)
-                      setRankingPreferences(newRankingPreferences)
-                    }}
-                  >
-                    <option value={0}>Urgent, important Work</option>
-                    <option value={1}>Deep, focus work</option>
-                    <option value={2}>Shallow, easy work</option>
-                  </select>
-                </div>
-              ))}
-            </div>
-            <button
-              className=' action add-task__actions--add-task'
-              type='submit'
-              disabled={defaultUserInfo ? false : disabled}
-            >
-              {defaultUserInfo ? 'Save' : 'Loading'}
-            </button>
-            <button
-              className={` action  ${
-                isLight ? 'action__cancel' : 'action__cancel--dark'
-              }`}
-              onClick={(event) => closeOverlay()}
-            >
-              Cancel
-            </button>
+                  <option value={0}>Urgent, important Work</option>
+                  <option value={1}>Deep, focus work</option>
+                  <option value={2}>Shallow, easy work</option>
+                </select>
+              </div>
+            ))}
           </div>
-        </form>
-      )}
+          <button
+            className=' action add-task__actions--add-task'
+            type='submit'
+            disabled={defaultUserInfo ? false : disabled}
+          >
+            {defaultUserInfo ? 'Save' : 'Loading'}
+          </button>
+          <button
+            className={` action  ${
+              isLight ? 'action__cancel' : 'action__cancel--dark'
+            }`}
+            onClick={(event) => closeOverlay()}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+      )
     </div>
   )
 }
