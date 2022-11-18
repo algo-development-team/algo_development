@@ -3,15 +3,6 @@ Field Names:
 - sleepTimeRange
 - workTimeRange
 - workDays
-- deepRankingsPnw
-- deepRankingsPw
-- deepRankingsWw
-- shallowRankingsPnw
-- shallowRankingsPw
-- shallowRankingsWw
-- urgentRankingsPnw
-- urgentRankingsPw
-- urgentRankingsWw
 
 User Setting Fields:
 - sleepStartTimeHour
@@ -27,12 +18,12 @@ User Setting Fields:
 
 Rankings: (minimal to get validation)
 Select urgent/deep/shallow option for each time range:
-- early morning (7am-9am)
-- morning (9am-11am)
+- early morning (5am-7am)
+- morning (8am-10am)
 - noon (11am-1pm)
-- afternoon (1pm-3pm)
-- late afternoon (3pm-5pm)
-- evening (5pm-7pm)
+- afternoon (2pm-4pm)
+- late afternoon (5pm-7pm)
+- evening (8pm-10pm)
 
 Actions:
 - set isSetup to true

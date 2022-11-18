@@ -28,8 +28,7 @@ export const getUserInfo = async (userId) => {
 }
 
 export const getDefaultUserInfo = () => {
-  const defaultRankings = new Array(24).fill(50)
-  const defaultRankingPreferences = new Array(6).fill(0)
+  const defaultRankingPreferences = new Array(6).fill(0) // all preferences are urgent
   const defaultUserInfo = {
     workTimeRange: '9:00-17:00',
     sleepTimeRange: '23:00-07:00',
@@ -38,15 +37,6 @@ export const getDefaultUserInfo = () => {
     isSetup: false,
     calendarId: null,
     checklist: [],
-    urgentRankingsWw: defaultRankings,
-    deepRankingsWw: defaultRankings,
-    shallowRankingsWw: defaultRankings,
-    urgentRankingsPw: defaultRankings,
-    deepRankingsPw: defaultRankings,
-    shallowRankingsPw: defaultRankings,
-    urgentRankingsPnw: defaultRankings,
-    deepRankingsPnw: defaultRankings,
-    shallowRankingsPnw: defaultRankings,
   }
   return defaultUserInfo
 }
