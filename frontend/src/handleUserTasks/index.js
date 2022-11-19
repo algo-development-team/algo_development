@@ -4,9 +4,18 @@ import { db } from '_firebase'
 export const getAllUserTasks = async (userId) => {
   const taskQuery = await query(collection(db, 'user', `${userId}/tasks`))
   const taskDocs = await getDocs(taskQuery)
-  const tasks = []
+  const nonCompletedTasks = []
+  const completedTasks = []
   taskDocs.forEach((taskDoc) => {
-    tasks.push(taskDoc.data())
+    const task = taskDoc.data()
+    if (!task.completed) {
+      nonCompletedTasks.push(task)
+    } else {
+      completedTasks.push(task)
+    }
   })
-  return tasks
+  return {
+    nonCompletedTasks: nonCompletedTasks,
+    completedTasks: completedTasks,
+  }
 }

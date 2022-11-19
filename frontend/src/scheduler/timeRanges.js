@@ -55,7 +55,6 @@ export const getAvailableTimeRanges = (timesWithInfo) => {
         availableTimeRanges.push({
           start: timesWithInfo[startAvailableTimeRangeIdx].time,
           end: timesWithInfo[i].time,
-          id: null,
         })
       }
       startAvailableTimeRangeIdx = -1
@@ -70,7 +69,6 @@ export const getAvailableTimeRanges = (timesWithInfo) => {
         availableTimeRanges.push({
           start: timesWithInfo[startAvailableTimeRangeIdx].time,
           end: timesWithInfo[i].time,
-          id: null,
         })
       }
       startAvailableTimeRangeIdx = -1
