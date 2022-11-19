@@ -10,7 +10,7 @@ import moment from 'moment'
 import { timeType } from 'components/enums'
 import { getAllUserTasks } from 'handleUserTasks'
 import { getAllUserProjects } from 'handleUserProjects'
-import { getRankings } from 'handleRankings'
+import { getPreferences } from 'handlePreferences'
 
 const MAX_NUM_CHUNKS = 8 // 2h
 
@@ -54,7 +54,7 @@ export const scheduleToday = async (userId) => {
     // console.log('dayRange[1]:', dayRange[1].format('MM-DD HH:mm')) // DEBUGGING
     // console.log('workRange[0]:', workRange[0].format('MM-DD HH:mm')) // DEBUGGING
     // console.log('workRange[1]:', workRange[1].format('MM-DD HH:mm')) // DEBUGGING
-    const eventsByTypeForToday = await getEventsByTypeForToday()
+    const eventsByTypeForToday = await getEventsByTypeForToday(now)
     const timeRangesForDay = await getTimeRangesForDay(
       eventsByTypeForToday.timeBlocked,
       dayRange[0],
@@ -80,25 +80,30 @@ export const scheduleToday = async (userId) => {
         userData.rankingPreferences,
       ),
     }
-    // console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
+    console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
     //*** GETTING AVAILABLE TIME RANGES END ***//
 
     //*** FIND TIME BLOCKS FOR USER'S TASKS START ***/
     const tasks = await getAllUserTasks(userId)
     const projects = await getAllUserProjects(userId)
-    const formattedTasks = formatTasks(tasks.nonCompleted, projects)
+    const tasksNotPassedDeadline = filterTaskNotPassedDeadline(
+      tasks.nonCompleted,
+      now,
+    )
+    const formattedTasks = formatTasks(tasksNotPassedDeadline, projects)
     // console.log('formattedTasks:', formattedTasks) // DEBUGGING
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
 
     //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS START ***/
-    // const t1 = new Date()
-    // assignTimeBlocks(blocksOfChunksWithRanking.work, formattedTasks.work)
-    // assignTimeBlocks(
-    //   blocksOfChunksWithRanking.personal,
-    //   formattedTasks.personal,
-    // )
-    // const t2 = new Date()
-    // console.log(t2 - t1)
+    const t1 = new Date()
+    assignTimeBlocks(blocksOfChunksWithRanking.work, formattedTasks.work, now)
+    assignTimeBlocks(
+      blocksOfChunksWithRanking.personal,
+      formattedTasks.personal,
+      now,
+    )
+    const t2 = new Date()
+    console.log(t2 - t1)
     //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS END ***/
   } catch (error) {
     console.log(error)
@@ -106,12 +111,20 @@ export const scheduleToday = async (userId) => {
   }
 }
 
+const filterTaskNotPassedDeadline = (tasks, now) => {
+  return tasks.filter((task) => {
+    if (task.date === '') return true
+    const deadline = moment(task.date, 'DD-MM-YYYY')
+    return deadline.isAfter(now, 'day') || deadline.isSame(now, 'day')
+  })
+}
+
 /***
  * requirements:
- * blocks: { start, end, ranking }[][]
+ * blocks: { start, end, preference }[][]
  * tasks: { priority, date, timeLength }[]
  * ***/
-const assignTimeBlocks = (blocks, tasks) => {
+const assignTimeBlocks = (blocks, tasks, now) => {
   // iterate over blocks
   for (let i = 0; i < blocks.length; i++) {
     // iterate over chunks
@@ -119,6 +132,16 @@ const assignTimeBlocks = (blocks, tasks) => {
       // iterate over tasks
       for (let k = 0; k < tasks.length; k++) {
         // calculate the relative priority of the task
+        const params = {
+          priority: tasks[k].priority,
+          diffDate: now.diff(tasks[k].date, 'days'),
+          timeLength: tasks[k].timeLength,
+          diffTimeLength: Math.abs(
+            tasks[k].timeLength - (blocks[i].length - j),
+          ),
+          preference: blocks[i][j].preference,
+        }
+        // console.log('params:', params) // DEBUGGING
       }
     }
   }
@@ -154,13 +177,13 @@ const formatTasks = (tasks, projects) => {
  * blocks: { start, end }[][]
  * ***/
 const rankBlocksOfChunks = (blocks, rankingPreferences) => {
-  const rankings = getRankings(rankingPreferences)
+  const preferences = getPreferences(rankingPreferences)
   return blocks.map((block) =>
     block.map((chunk) => {
       return {
         start: chunk.start,
         end: chunk.end,
-        ranking: rankings[chunk.start.hour()],
+        preference: preferences[chunk.start.hour()],
       }
     }),
   )
@@ -169,7 +192,7 @@ const rankBlocksOfChunks = (blocks, rankingPreferences) => {
 /***
  * DEBUGGING PURPOSES ONLY
  * requirements:
- * blocks: { start, end, ranking }[][]
+ * blocks: { start, end, preference }[][]
  * blockType: string
  * ***/
 const printBlocks = (blocks, blockType) => {
@@ -295,11 +318,8 @@ const divideTimeRangesIntoChunkRanges = (timeRanges) => {
   return chunkRanges
 }
 
-/***
- * HELPER FUNCTION
- * ***/
-const getEventsByTypeForToday = async () => {
-  const today = moment().startOf('day')
+const getEventsByTypeForToday = async (now) => {
+  const today = now.startOf('day')
   const timeMin = today
     .clone()
     .subtract(1, 'day')
@@ -327,7 +347,6 @@ const getEventsByTypeForToday = async () => {
 }
 
 /***
- * HELPER FUNCTION
  * requirements:
  * events: Google Calendar API events (time-blocked)
  * timeStartDay: moment object
