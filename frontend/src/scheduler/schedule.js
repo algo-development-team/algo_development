@@ -90,8 +90,8 @@ export const scheduleToday = async (userId) => {
       tasks.nonCompleted,
       now,
     )
-    const formattedTasks = formatTasks(tasksNotPassedDeadline, projects)
-    // console.log('formattedTasks:', formattedTasks) // DEBUGGING
+    const formattedTasks = formatTasks(tasksNotPassedDeadline, projects, now)
+    console.log('formattedTasks:', formattedTasks) // DEBUGGING
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
 
     //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS START ***/
@@ -111,18 +111,32 @@ export const scheduleToday = async (userId) => {
   }
 }
 
-const filterTaskNotPassedDeadline = (tasks, now) => {
-  return tasks.filter((task) => {
-    if (task.date === '') return true
-    const deadline = moment(task.date, 'DD-MM-YYYY')
-    return deadline.isAfter(now, 'day') || deadline.isSame(now, 'day')
-  })
+/***
+ * requirements:
+ * priority: number (1-3)
+ * deadline: number (0-14)
+ * timeLength: number (1-32)
+ * ***/
+const calculateTaskPreference = (priority, deadline, timeLength) => {
+  const isShort = timeLength <= 3
+  const isUrgent = deadline !== null && deadline <= 2
+  const isImportant =
+    priority === 3 ? true : priority === 2 && !isShort ? true : false
+  if (isUrgent && isImportant) {
+    return 0 // urgent
+  } else if (isUrgent && !isImportant) {
+    return 2 // shallow
+  } else if (!isUrgent && isImportant) {
+    return 1 // deep
+  } else {
+    return 2 // shallow
+  }
 }
 
 /***
  * requirements:
  * blocks: { start, end, preference }[][]
- * tasks: { priority, date, timeLength }[]
+ * tasks: { priority, deadline, timeLength }[]
  * ***/
 const assignTimeBlocks = (blocks, tasks, now) => {
   // iterate over blocks
@@ -132,14 +146,17 @@ const assignTimeBlocks = (blocks, tasks, now) => {
       // iterate over tasks
       for (let k = 0; k < tasks.length; k++) {
         // calculate the relative priority of the task
+        const diffTimeLength = Math.abs(
+          tasks[k].timeLength - (blocks[i].length - j),
+        )
+        const isPreference =
+          (tasks[k].reference === blocks[i][j].preference) === true ? 1 : 0
         const params = {
           priority: tasks[k].priority,
-          diffDate: now.diff(tasks[k].date, 'days'),
+          deadline: tasks[k].deadline,
           timeLength: tasks[k].timeLength,
-          diffTimeLength: Math.abs(
-            tasks[k].timeLength - (blocks[i].length - j),
-          ),
-          preference: blocks[i][j].preference,
+          diffTimeLength: diffTimeLength,
+          isPreference: isPreference,
         }
         // console.log('params:', params) // DEBUGGING
       }
@@ -147,7 +164,25 @@ const assignTimeBlocks = (blocks, tasks, now) => {
   }
 }
 
-const formatTasks = (tasks, projects) => {
+/***
+ * requirements:
+ * tasks: task[] (from firestore)
+ * now: moment object
+ * ***/
+const filterTaskNotPassedDeadline = (tasks, now) => {
+  return tasks.filter((task) => {
+    if (task.date === '') return true
+    const deadline = moment(task.date, 'DD-MM-YYYY')
+    return deadline.diff(now, 'days') >= 0
+  })
+}
+
+/***
+ * requirements:
+ * tasks: task[] (from firestore)
+ * projects: project[] (from firestore)
+ * ***/
+const formatTasks = (tasks, projects, now) => {
   const projectIdToIsWork = {}
   for (const project of projects) {
     projectIdToIsWork[project.projectId] = project.projectIsWork
@@ -155,10 +190,23 @@ const formatTasks = (tasks, projects) => {
   const formattedWorkTasks = []
   const formattedPersonalTasks = []
   for (const task of tasks) {
+    const formattedTimeLength = task.timeLength / 15
+    const formattedDate =
+      task.date !== '' ? moment(task.date, 'DD-MM-YYYY') : null
+    const deadline =
+      formattedDate !== null
+        ? Math.min(formattedDate.diff(now, 'days'), 14)
+        : null
+    const preference = calculateTaskPreference(
+      task.priority,
+      deadline,
+      formattedTimeLength,
+    )
     const formattedTask = {
       priority: task.priority,
-      date: task.date !== '' ? moment(task.date, 'DD-MM-YYYY') : null,
-      timeLength: task.timeLength / 15,
+      deadline: deadline,
+      timeLength: formattedTimeLength,
+      preference: preference,
     }
     if (projectIdToIsWork[task.projectId]) {
       formattedWorkTasks.push(formattedTask)
@@ -222,10 +270,8 @@ function sliceIntoSubarr(arr, size) {
 
 /***
  * Groups chunk ranges considering both max number of chunks and work range
- * HELPER FUNCTION
  * requirements:
- * chunkRanges: array of time ranges
- * chunkRanges (format): { start: moment, end: moment }[]
+ * chunkRanges: { start: moment, end: moment }[]
  * ***/
 const groupChunkRangesIntoBlocks = (
   chunkRanges,
@@ -295,10 +341,8 @@ const groupChunkRangesIntoBlocks = (
 }
 
 /***
- * HELPER FUNCTION
  * requirements:
- * timeRanges: array of time ranges
- * timeRanges (format): { start: moment, end: moment }[]
+ * timeRanges: { start: moment, end: moment }[]
  * ***/
 const divideTimeRangesIntoChunkRanges = (timeRanges) => {
   const chunkRanges = []
