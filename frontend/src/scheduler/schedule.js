@@ -38,6 +38,10 @@ export const scheduleToday = async (userId) => {
     if (dayRange[0].isAfter(dayRange[1])) {
       dayRange[1].add(1, 'day')
     }
+    // the end of the work time is in the next day
+    if (workRange[0].isAfter(workRange[1])) {
+      workRange[1].add(1, 'day')
+    }
     // now is before the start of sleep range (i.e. before 11pm of night before)
     // continues to schedule for the current day
     if (dayRange[1].clone().subtract(1, 'day').isAfter(now)) {
@@ -46,6 +50,10 @@ export const scheduleToday = async (userId) => {
       workRange[0].subtract(1, 'day')
       workRange[1].subtract(1, 'day')
     }
+    // console.log('dayRange[0]:', dayRange[0].format('MM-DD HH:mm')) // DEBUGGING
+    // console.log('dayRange[1]:', dayRange[1].format('MM-DD HH:mm')) // DEBUGGING
+    // console.log('workRange[0]:', workRange[0].format('MM-DD HH:mm')) // DEBUGGING
+    // console.log('workRange[1]:', workRange[1].format('MM-DD HH:mm')) // DEBUGGING
     const eventsByTypeForToday = await getEventsByTypeForToday()
     const timeRangesForDay = await getTimeRangesForDay(
       eventsByTypeForToday.timeBlocked,
@@ -55,14 +63,16 @@ export const scheduleToday = async (userId) => {
     const chunkRanges = divideTimeRangesIntoChunkRanges(
       timeRangesForDay.availableTimeRanges,
     )
+    const hasWorkTime = userData.workDays[workRange[1].day()]
     const blocks = groupChunkRangesIntoBlocks(
       chunkRanges,
       MAX_NUM_CHUNKS,
       workRange[0],
       workRange[1],
+      hasWorkTime,
     )
-    // printBlocks(blocks.work, 'work') // DEBUGGING
-    // printBlocks(blocks.personal, 'personal') // DEBUGGING
+    printBlocks(blocks.work, 'work') // DEBUGGING
+    printBlocks(blocks.personal, 'personal') // DEBUGGING
     const blocksOfChunksWithRanking = {
       work: rankBlocksOfChunks(blocks.work, userData.rankingPreferences),
       personal: rankBlocksOfChunks(
@@ -199,33 +209,65 @@ const groupChunkRangesIntoBlocks = (
   maxNumChunks,
   workTimeStart,
   workTimeEnd,
+  hasWorkTime,
 ) => {
   let workBlocks = []
   let personalBlocks = []
+  // divide chunk ranges into work and personal blocks
   for (const chunkRange of chunkRanges) {
-    const workChunkRange = []
-    const personalChunkRange = []
+    const workChunkRanges = []
+    const personalChunkRanges = []
+    let workChunkRange = []
+    let personalChunkRange = []
+    let isLastChunkWork = false
+    let isLastChunkPersonal = false
     for (const chunk of chunkRange) {
-      if (
-        (chunk.start.isSame(workTimeStart) ||
-          chunk.start.isAfter(workTimeStart)) &&
-        (chunk.end.isSame(workTimeEnd) || chunk.end.isBefore(workTimeEnd))
-      ) {
-        workChunkRange.push(chunk)
+      if (hasWorkTime) {
+        if (
+          (chunk.start.isSame(workTimeStart) ||
+            chunk.start.isAfter(workTimeStart)) &&
+          (chunk.end.isSame(workTimeEnd) || chunk.end.isBefore(workTimeEnd))
+        ) {
+          if (isLastChunkPersonal) {
+            personalChunkRanges.push(personalChunkRange)
+            personalChunkRange = []
+            isLastChunkPersonal = false
+          }
+          workChunkRange.push(chunk)
+          isLastChunkWork = true
+        } else {
+          if (isLastChunkWork) {
+            workChunkRanges.push(workChunkRange)
+            workChunkRange = []
+            isLastChunkWork = false
+          }
+          personalChunkRange.push(chunk)
+          isLastChunkPersonal = true
+        }
       } else {
         personalChunkRange.push(chunk)
       }
     }
-    workBlocks = workBlocks.concat(
-      sliceIntoSubarr(workChunkRange, maxNumChunks),
-    )
-    personalBlocks = personalBlocks.concat(
-      sliceIntoSubarr(personalChunkRange, maxNumChunks),
-    )
+    if (workChunkRange.length > 0) workChunkRanges.push(workChunkRange)
+    if (personalChunkRange.length > 0)
+      personalChunkRanges.push(personalChunkRange)
+    workBlocks = workBlocks.concat(workChunkRanges)
+    personalBlocks = personalBlocks.concat(personalChunkRanges)
+  }
+  // divide blocks into blocks of (maxNumChunks >= number of chunks in a block)
+  const workBlocksSliced = []
+  const personalBlocksSliced = []
+  for (const block of workBlocks) {
+    const slicedBlock = sliceIntoSubarr(block, maxNumChunks)
+    workBlocksSliced.push(...slicedBlock)
+  }
+  for (const block of personalBlocks) {
+    const slicedBlock = sliceIntoSubarr(block, maxNumChunks)
+    personalBlocksSliced.push(...slicedBlock)
   }
   return {
-    work: workBlocks,
-    personal: personalBlocks,
+    work: workBlocksSliced,
+    personal: personalBlocksSliced,
   }
 }
 
