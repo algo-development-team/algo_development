@@ -13,6 +13,10 @@ import { getAllUserProjects } from 'handleUserProjects'
 import { getPreferences } from 'handlePreferences'
 
 const MAX_NUM_CHUNKS = 8 // 2h
+const PRIORITY_RANGE = Object.freeze([1, 3])
+const DEADLINE_RANGE = Object.freeze([0, 14])
+const TIME_LENGTH_RANGE = Object.freeze([1, 32])
+const DIFF_TIME_LENGTH_RANGE = Object.freeze([0, 7])
 
 /***
  * Note: schedules the entire day, no matter what the current time is
@@ -50,10 +54,12 @@ export const scheduleToday = async (userId) => {
       workRange[0].subtract(1, 'day')
       workRange[1].subtract(1, 'day')
     }
+
     // console.log('dayRange[0]:', dayRange[0].format('MM-DD HH:mm')) // DEBUGGING
     // console.log('dayRange[1]:', dayRange[1].format('MM-DD HH:mm')) // DEBUGGING
     // console.log('workRange[0]:', workRange[0].format('MM-DD HH:mm')) // DEBUGGING
     // console.log('workRange[1]:', workRange[1].format('MM-DD HH:mm')) // DEBUGGING
+
     const eventsByTypeForToday = await getEventsByTypeForToday(now)
     const timeRangesForDay = await getTimeRangesForDay(
       eventsByTypeForToday.timeBlocked,
@@ -71,8 +77,10 @@ export const scheduleToday = async (userId) => {
       workRange[1],
       hasWorkTime,
     )
+
     printBlocks(blocks.work, 'work') // DEBUGGING
     printBlocks(blocks.personal, 'personal') // DEBUGGING
+
     const blocksOfChunksWithRanking = {
       work: rankBlocksOfChunks(blocks.work, userData.rankingPreferences),
       personal: rankBlocksOfChunks(
@@ -80,7 +88,9 @@ export const scheduleToday = async (userId) => {
         userData.rankingPreferences,
       ),
     }
-    console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
+
+    // console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
+
     //*** GETTING AVAILABLE TIME RANGES END ***//
 
     //*** FIND TIME BLOCKS FOR USER'S TASKS START ***/
@@ -91,16 +101,28 @@ export const scheduleToday = async (userId) => {
       now,
     )
     const formattedTasks = formatTasks(tasksNotPassedDeadline, projects, now)
+
     console.log('formattedTasks:', formattedTasks) // DEBUGGING
+
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
 
     //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS START ***/
     const t1 = new Date()
-    assignTimeBlocks(blocksOfChunksWithRanking.work, formattedTasks.work, now)
+    assignTimeBlocks(
+      blocksOfChunksWithRanking.work,
+      formattedTasks.work,
+      PRIORITY_RANGE,
+      DEADLINE_RANGE,
+      TIME_LENGTH_RANGE,
+      DIFF_TIME_LENGTH_RANGE,
+    )
     assignTimeBlocks(
       blocksOfChunksWithRanking.personal,
       formattedTasks.personal,
-      now,
+      PRIORITY_RANGE,
+      DEADLINE_RANGE,
+      TIME_LENGTH_RANGE,
+      DIFF_TIME_LENGTH_RANGE,
     )
     const t2 = new Date()
     console.log(t2 - t1)
@@ -109,6 +131,13 @@ export const scheduleToday = async (userId) => {
     console.log(error)
     return { checklist: [], failed: true }
   }
+}
+
+const normalize = (val, range, flip) => {
+  if (flip) {
+    return (range[1] - val) / (range[1] - range[0])
+  }
+  return (val - range[0]) / (range[1] - range[0])
 }
 
 /***
@@ -138,7 +167,14 @@ const calculateTaskPreference = (priority, deadline, timeLength) => {
  * blocks: { start, end, preference }[][]
  * tasks: { priority, deadline, timeLength }[]
  * ***/
-const assignTimeBlocks = (blocks, tasks, now) => {
+const assignTimeBlocks = (
+  blocks,
+  tasks,
+  priorityRange,
+  deadlineRange,
+  timeLengthRange,
+  diffTimeLengthRange,
+) => {
   // iterate over blocks
   for (let i = 0; i < blocks.length; i++) {
     // iterate over chunks
@@ -146,19 +182,21 @@ const assignTimeBlocks = (blocks, tasks, now) => {
       // iterate over tasks
       for (let k = 0; k < tasks.length; k++) {
         // calculate the relative priority of the task
-        const diffTimeLength = Math.abs(
-          tasks[k].timeLength - (blocks[i].length - j),
+        const diffTimeLength = Math.min(
+          Math.abs(tasks[k].timeLength - (blocks[i].length - j)),
+          7,
         )
         const isPreference =
-          (tasks[k].reference === blocks[i][j].preference) === true ? 1 : 0
-        const params = {
-          priority: tasks[k].priority,
-          deadline: tasks[k].deadline,
-          timeLength: tasks[k].timeLength,
-          diffTimeLength: diffTimeLength,
+          (tasks[k].preference === blocks[i][j].preference) === true ? 1 : 0
+        const normalizedParams = {
+          priority: normalize(tasks[k].priority, priorityRange, true),
+          deadline: normalize(tasks[k].deadline, deadlineRange, true),
+          timeLength: normalize(tasks[k].timeLength, timeLengthRange, true),
+          diffTimeLength: normalize(diffTimeLength, diffTimeLengthRange, true),
           isPreference: isPreference,
         }
-        // console.log('params:', params) // DEBUGGING
+
+        console.log('normalizedParams:', normalizedParams) // DEBUGGING
       }
     }
   }
