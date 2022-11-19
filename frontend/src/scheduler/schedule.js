@@ -10,6 +10,7 @@ import moment from 'moment'
 import { timeType } from 'components/enums'
 import { getAllUserTasks } from 'handleUserTasks'
 import { getAllUserProjects } from 'handleUserProjects'
+import { getRankings } from 'handleRankings'
 
 const MAX_NUM_CHUNKS = 8 // 2h
 
@@ -57,8 +58,16 @@ export const scheduleToday = async (userId) => {
       workRange[0],
       workRange[1],
     )
+    const blocksOfChunksWithRanking = {
+      work: rankBlocksOfChunks(blocks.work, userData.rankingPreferences),
+      personal: rankBlocksOfChunks(
+        blocks.personal,
+        userData.rankingPreferences,
+      ),
+    }
     printBlocks(blocks.work, 'work') // DEBUGGING
     printBlocks(blocks.personal, 'personal') // DEBUGGING
+    console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
     //*** GETTING AVAILABLE TIME RANGES END ***//
 
     //*** FIND TIME BLOCKS FOR USER'S TASKS START ***/
@@ -67,9 +76,38 @@ export const scheduleToday = async (userId) => {
     const formattedTasks = formatTasks(tasks.nonCompleted, projects)
     console.log('formattedTasks:', formattedTasks) // DEBUGGING
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
+
+    //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS START ***/
+    // const t1 = new Date()
+    // assignTimeBlocks(blocksOfChunksWithRanking.work, formattedTasks.work)
+    // assignTimeBlocks(
+    //   blocksOfChunksWithRanking.personal,
+    //   formattedTasks.personal,
+    // )
+    // const t2 = new Date()
+    // console.log(t2 - t1)
+    //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS END ***/
   } catch (error) {
     console.log(error)
     return { checklist: [], failed: true }
+  }
+}
+
+/***
+ * requirements:
+ * blocks: { start, end, ranking }[][]
+ * tasks: { priority, date, timeLength }[]
+ * ***/
+const assignTimeBlocks = (blocks, tasks) => {
+  // iterate over blocks
+  for (let i = 0; i < blocks.length; i++) {
+    // iterate over chunks
+    for (let j = 0; j < blocks[i].length; j++) {
+      // iterate over tasks
+      for (let k = 0; k < tasks.length; k++) {
+        // calculate the relative priority of the task
+      }
+    }
   }
 }
 
@@ -99,13 +137,30 @@ const formatTasks = (tasks, projects) => {
 }
 
 /***
- * DEBUGGING PURPOSES ONLY
  * requirements:
  * blocks: { start, end }[][]
- * type: string
  * ***/
-const printBlocks = (blocks, type) => {
-  console.log(type + ':')
+const rankBlocksOfChunks = (blocks, rankingPreferences) => {
+  const rankings = getRankings(rankingPreferences)
+  return blocks.map((block) =>
+    block.map((chunk) => {
+      return {
+        start: chunk.start,
+        end: chunk.end,
+        ranking: rankings[chunk.start.hour()],
+      }
+    }),
+  )
+}
+
+/***
+ * DEBUGGING PURPOSES ONLY
+ * requirements:
+ * blocks: { start, end, ranking }[][]
+ * blockType: string
+ * ***/
+const printBlocks = (blocks, blockType) => {
+  console.log(blockType + ':')
   for (const block of blocks) {
     console.log('-'.repeat(15))
     for (const chunk of block) {
