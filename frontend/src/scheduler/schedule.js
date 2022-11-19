@@ -99,6 +99,7 @@ const formatTasks = (tasks, projects) => {
 }
 
 /***
+ * DEBUGGING PURPOSES ONLY
  * requirements:
  * blocks: { start, end }[][]
  * type: string
