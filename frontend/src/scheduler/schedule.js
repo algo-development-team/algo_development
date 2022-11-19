@@ -48,42 +48,84 @@ export const scheduleToday = async (userId) => {
       dayRange[0],
       dayRange[1],
     )
-    console.log('timeRangesForDay:', timeRangesForDay) // DEBUGGING
     const chunkRanges = divideTimeRangesIntoChunkRanges(
       timeRangesForDay.availableTimeRanges,
     )
-    // const blocks = groupChunkRangesIntoBlocks(
-    //   chunkRanges,
-    //   MAX_NUM_CHUNKS,
-    //   workRange[0],
-    //   workRange[1],
-    // )
+    const blocks = groupChunkRangesIntoBlocks(
+      chunkRanges,
+      MAX_NUM_CHUNKS,
+      workRange[0],
+      workRange[1],
+    )
+    printBlocks(blocks.work, 'work') // DEBUGGING
+    printBlocks(blocks.personal, 'personal') // DEBUGGING
     //*** GETTING AVAILABLE TIME RANGES END ***//
 
     //*** FIND TIME BLOCKS FOR USER'S TASKS START ***/
     const tasks = await getAllUserTasks(userId)
-    const nonCompletedTasks = tasks.nonCompletedTasks
     const projects = await getAllUserProjects(userId)
-    const projectIdToIsWork = {}
-    for (const project of projects) {
-      projectIdToIsWork[project.projectId] = project.projectIsWork
-    }
-    const formattedTasks = []
-    for (const task of nonCompletedTasks) {
-      const formattedTask = {
-        isWork: projectIdToIsWork[task.projectId],
-        priority: task.priority,
-        date: task.date !== '' ? moment(task.date, 'DD-MM-YYYY') : null,
-        timeLength: task.timeLength / 15,
-      }
-      formattedTasks.push(formattedTask)
-    }
+    const formattedTasks = formatTasks(tasks.nonCompleted, projects)
     console.log('formattedTasks:', formattedTasks) // DEBUGGING
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
   } catch (error) {
     console.log(error)
     return { checklist: [], failed: true }
   }
+}
+
+const formatTasks = (tasks, projects) => {
+  const projectIdToIsWork = {}
+  for (const project of projects) {
+    projectIdToIsWork[project.projectId] = project.projectIsWork
+  }
+  const formattedWorkTasks = []
+  const formattedPersonalTasks = []
+  for (const task of tasks) {
+    const formattedTask = {
+      priority: task.priority,
+      date: task.date !== '' ? moment(task.date, 'DD-MM-YYYY') : null,
+      timeLength: task.timeLength / 15,
+    }
+    if (projectIdToIsWork[task.projectId]) {
+      formattedWorkTasks.push(formattedTask)
+    } else {
+      formattedPersonalTasks.push(formattedTask)
+    }
+  }
+  return {
+    work: formattedWorkTasks,
+    personal: formattedPersonalTasks,
+  }
+}
+
+/***
+ * requirements:
+ * blocks: { start, end }[][]
+ * type: string
+ * ***/
+const printBlocks = (blocks, type) => {
+  console.log(type + ':')
+  for (const block of blocks) {
+    console.log('-'.repeat(15))
+    for (const chunk of block) {
+      console.log(chunk.start.format('HH:mm'), '-', chunk.end.format('HH:mm'))
+    }
+    console.log('-'.repeat(15))
+  }
+}
+
+/***
+ * requirements:
+ * arr: array of items
+ * size: size of each subarr
+ * ***/
+function sliceIntoSubarr(arr, size) {
+  const subarrs = []
+  for (let i = 0; i < arr.length; i += size) {
+    const subarr = arr.slice(i, i + size)
+    subarrs.push(subarr)
+  }
+  return subarrs
 }
 
 /***
@@ -98,7 +140,35 @@ const groupChunkRangesIntoBlocks = (
   maxNumChunks,
   workTimeStart,
   workTimeEnd,
-) => {}
+) => {
+  let workBlocks = []
+  let personalBlocks = []
+  for (const chunkRange of chunkRanges) {
+    const workChunkRange = []
+    const personalChunkRange = []
+    for (const chunk of chunkRange) {
+      if (
+        (chunk.start.isSame(workTimeStart) ||
+          chunk.start.isAfter(workTimeStart)) &&
+        (chunk.end.isSame(workTimeEnd) || chunk.end.isBefore(workTimeEnd))
+      ) {
+        workChunkRange.push(chunk)
+      } else {
+        personalChunkRange.push(chunk)
+      }
+    }
+    workBlocks = workBlocks.concat(
+      sliceIntoSubarr(workChunkRange, maxNumChunks),
+    )
+    personalBlocks = personalBlocks.concat(
+      sliceIntoSubarr(personalChunkRange, maxNumChunks),
+    )
+  }
+  return {
+    work: workBlocks,
+    personal: personalBlocks,
+  }
+}
 
 /***
  * HELPER FUNCTION
@@ -112,10 +182,11 @@ const divideTimeRangesIntoChunkRanges = (timeRanges) => {
     const chunkRange = []
     const currentChunk = timeRange.start.clone()
     while (currentChunk.isBefore(timeRange.end)) {
-      chunkRange.push({
+      const chunk = {
         start: currentChunk.clone(),
         end: currentChunk.clone().add(15, 'minute'),
-      })
+      }
+      chunkRange.push(chunk)
       currentChunk.add(15, 'minute')
     }
     chunkRanges.push(chunkRange)
@@ -163,7 +234,6 @@ const getEventsByTypeForToday = async () => {
  * currently only returns available time ranges, can be expanded in future to return blocked time ranges as well
  * ***/
 const getTimeRangesForDay = async (events, timeStartDay, timeEndDay) => {
-  console.log('events:', events) // DEBUGGING
   const timesWithInfo = getTimesWithInfo(events)
   const timeStartDayWithInfo = {
     time: timeStartDay,

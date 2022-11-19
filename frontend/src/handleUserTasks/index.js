@@ -15,7 +15,7 @@ export const getAllUserTasks = async (userId) => {
     }
   })
   return {
-    nonCompletedTasks: nonCompletedTasks,
-    completedTasks: completedTasks,
+    nonCompleted: nonCompletedTasks,
+    completed: completedTasks,
   }
 }
