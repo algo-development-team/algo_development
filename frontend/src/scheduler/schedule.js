@@ -26,6 +26,7 @@ export const scheduleToday = async (userId) => {
       return { checklist: [], failed: true }
     }
     const userData = userInfo.userInfoDoc.data()
+    const now = moment()
     const sleepRange = userData.sleepTimeRange
       .split('-')
       .map((time) => moment(time, 'HH:mm'))
@@ -39,9 +40,11 @@ export const scheduleToday = async (userId) => {
     }
     // now is before the start of sleep range (i.e. before 11pm of night before)
     // continues to schedule for the current day
-    if (dayRange[1].clone().subtract(1, 'day').isAfter(moment())) {
+    if (dayRange[1].clone().subtract(1, 'day').isAfter(now)) {
       dayRange[0].subtract(1, 'day')
       dayRange[1].subtract(1, 'day')
+      workRange[0].subtract(1, 'day')
+      workRange[1].subtract(1, 'day')
     }
     const eventsByTypeForToday = await getEventsByTypeForToday()
     const timeRangesForDay = await getTimeRangesForDay(
@@ -58,6 +61,8 @@ export const scheduleToday = async (userId) => {
       workRange[0],
       workRange[1],
     )
+    // printBlocks(blocks.work, 'work') // DEBUGGING
+    // printBlocks(blocks.personal, 'personal') // DEBUGGING
     const blocksOfChunksWithRanking = {
       work: rankBlocksOfChunks(blocks.work, userData.rankingPreferences),
       personal: rankBlocksOfChunks(
@@ -65,16 +70,14 @@ export const scheduleToday = async (userId) => {
         userData.rankingPreferences,
       ),
     }
-    printBlocks(blocks.work, 'work') // DEBUGGING
-    printBlocks(blocks.personal, 'personal') // DEBUGGING
-    console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
+    // console.log('blocksOfChunksWithRanking', blocksOfChunksWithRanking) // DEBUGGING
     //*** GETTING AVAILABLE TIME RANGES END ***//
 
     //*** FIND TIME BLOCKS FOR USER'S TASKS START ***/
     const tasks = await getAllUserTasks(userId)
     const projects = await getAllUserProjects(userId)
     const formattedTasks = formatTasks(tasks.nonCompleted, projects)
-    console.log('formattedTasks:', formattedTasks) // DEBUGGING
+    // console.log('formattedTasks:', formattedTasks) // DEBUGGING
     //*** FIND TIME BLOCKS FOR USER'S TASKS END ***/
 
     //*** CALCULATE THE RELATIVE PRIORITY OF EACH TASK AND ASSIGN TIME BLOCKS START ***/
